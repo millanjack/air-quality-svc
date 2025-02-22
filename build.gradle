@@ -1,11 +1,16 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.2'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+    id "com.github.ben-manes.versions" version "${benManesDependencyVersion}"
 }
 
-group = 'org.example'
-version = '0.0.1-SNAPSHOT'
+group = "${buildGroup}"
+version = "${buildVersion}"
+
+java {
+    sourceCompatibility = "${javaVersion}"
+}
 
 java {
     toolchain {

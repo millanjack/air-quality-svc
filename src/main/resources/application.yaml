@@ -1,0 +1,19 @@
+server:
+  port: ${PORT:8080}
+
+  error:
+    include-message: always
+    whitelabel:
+      enabled: true
+
+spring:
+  application:
+    name: air-quality-svc
+
+  config:
+    import: optional:file:.env[.properties]
+
+  threads:
+    virtual:
+      enabled: true
+
