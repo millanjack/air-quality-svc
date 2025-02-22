@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8081}
 
   error:
     include-message: always
@@ -17,3 +17,11 @@ spring:
     virtual:
       enabled: true
 
+app:
+  rabbitmq:
+    username: ${APP_SERVICE_RABBITMQ_USERNAME}
+    password: ${APP_SERVICE_RABBITMQ_PASSWORD}
+    port: ${APP_SERVICE_RABBITMQ_PORT:5672}
+    host: ${APP_SERVICE_RABBITMQ_HOST:localhost}
+    virtualhost: ${APP_SERVICE_RABBITMQ_VIRTUAL_HOST}
+    queue: ${APP_SERVICE_RABBITMQ_QUEUE:air-quality-queue}
