@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Sensor Data</title>
+    <!--    <script>-->
+    <!--        document.addEventListener("DOMContentLoaded", function () {-->
+    <!--            const socket = new WebSocket("ws://localhost:8080/sensor-data");-->
+    <!--            socket.onmessage = function (event) {-->
+    <!--                const data = JSON.parse(event.data);-->
+    <!--                document.getElementById("sensor-data").innerText = JSON.stringify(data, null, 2);-->
+    <!--            };-->
+    <!--            socket.onopen = () => console.log("WebSocket connected!");-->
+    <!--            socket.onerror = (error) => console.error("WebSocket Error: ", error);-->
+    <!--            socket.onclose = () => console.log("WebSocket closed!");-->
+    <!--        });-->
+    <!--    </script>-->
+</head>
+<body>
+<h1>Sensor Data</h1>
+<pre id="sensor-data"></pre>
+
+<script>
+    fetch('/config')
+        .then(response => response.json())
+        .then(config => {
+            const socket = new WebSocket(config.webSocketUrl);
+            socket.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                document.getElementById("sensor-data").innerText = JSON.stringify(data, null, 2);
+            };
+            socket.onopen = () => console.log("WebSocket connected!");
+            socket.onerror = (error) => console.error("WebSocket Error: ", error);
+            socket.onclose = () => console.log("WebSocket closed!");
+        })
+        .catch(error => console.error("Error loading config:", error));
+</script>
+</body>
+</html>

@@ -18,6 +18,9 @@ spring:
       enabled: true
 
 app:
+  websocket:
+    url: ${APP_SERVICE_WEBSOCKET_URL:ws://localhost:8081/sensor-data}
+
   rabbitmq:
     username: ${APP_SERVICE_RABBITMQ_USERNAME}
     password: ${APP_SERVICE_RABBITMQ_PASSWORD}
