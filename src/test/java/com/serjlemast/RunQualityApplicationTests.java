@@ -1,17 +1,11 @@
 package com.serjlemast;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ContextConfiguration;
 
-import org.springframework.amqp.rabbit.test.context.SpringRabbitTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-
-@SpringJUnitConfig
-@SpringRabbitTest
+@ContextConfiguration(classes = RunQualityApplication.class)
 class RunQualityApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
-
+  @Test
+  void contextLoads() {}
 }

@@ -17,6 +17,11 @@ spring:
     virtual:
       enabled: true
 
+  data:
+    mongodb:
+      uri: ${APP_SERVICE_MONGO_URL:uri}
+      database: ${APP_SERVICE_MONGO_DB:bg-stack-game-db}
+
 app:
   websocket:
     url: ${APP_SERVICE_WEBSOCKET_URL:ws://localhost:8081/sensor-data}

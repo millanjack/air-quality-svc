@@ -1,6 +1,8 @@
 package com.serjlemast.consumer;
 
 import com.rabbitmq.client.Channel;
+import com.serjlemast.event.CreateSensorDataEvent;
+import com.serjlemast.event.PublisherEventService;
 import com.serjlemast.handler.SensorDataWebSocketHandler;
 import com.serjlemast.model.SensorDataEvent;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class RabbitMqConsumer {
 
   private final SensorDataWebSocketHandler webSocketHandler;
+  private final PublisherEventService publisherEventService;
 
   @RabbitHandler
   public void handle(
@@ -26,6 +29,7 @@ public class RabbitMqConsumer {
     log.info("  <<< Delivery tag: {}", tag);
     log.info("  <<< Channel channel: {}", channel);
     try {
+      publisherEventService.publish(new CreateSensorDataEvent(data));
       webSocketHandler.sendSensorData(data); // Send to WebSocket clients
     } catch (Exception e) {
       log.error("Error sending WebSocket message", e);

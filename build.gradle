@@ -24,20 +24,24 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
-//    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation "org.xerial.snappy:snappy-java:${snappyVersion}"
 
-
-        implementation("com.fasterxml.jackson.module:jackson-modules-java8:2.18.2")
-        implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2")
+    implementation("com.fasterxml.jackson.module:jackson-modules-java8:2.18.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2")
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo:${embedMongoVersion}"
+    testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:${embedMongoSpring3xVersion}"
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()
