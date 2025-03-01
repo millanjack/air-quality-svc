@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.xerial.snappy:snappy-java:${snappyVersion}"
 
     implementation("com.fasterxml.jackson.module:jackson-modules-java8:2.18.2")
