@@ -4,7 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.serjlemast.event.CreateSensorDataEvent;
 import com.serjlemast.event.PublisherEventService;
 import com.serjlemast.handler.SensorDataWebSocketHandler;
-import com.serjlemast.model.SensorDataEvent;
+import com.serjlemast.publisher.event.RaspberryEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -24,7 +24,7 @@ public class RabbitMqConsumer {
 
   @RabbitHandler
   public void handle(
-      SensorDataEvent data, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) {
+      RaspberryEvent data, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) {
     log.info("  <<< Received message: {}", data);
     log.info("  <<< Delivery tag: {}", tag);
     log.info("  <<< Channel channel: {}", channel);

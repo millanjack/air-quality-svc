@@ -1,5 +1,5 @@
 package com.serjlemast.event;
 
-import com.serjlemast.model.SensorDataEvent;
+import com.serjlemast.publisher.event.RaspberryEvent;
 
-public record CreateSensorDataEvent(SensorDataEvent sensorDataEvent) {}
+public record CreateSensorDataEvent(RaspberryEvent sensorDataEvent) {}

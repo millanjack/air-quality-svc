@@ -1,6 +1,6 @@
 package com.serjlemast.repository.entity;
 
-import com.serjlemast.model.SensorDataEvent;
+import com.serjlemast.publisher.event.RaspberryEvent;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
@@ -13,5 +13,5 @@ public class TelemetryEntity {
 
   @Id private String id;
 
-  private SensorDataEvent data;
+  private RaspberryEvent data;
 }
