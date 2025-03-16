@@ -2,14 +2,12 @@ package com.serjlemast.configuration;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoCompressor;
 import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.connection.ConnectionPoolSettings;
 import com.mongodb.connection.SocketSettings;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +56,7 @@ public class MongoDbConfiguration extends AbstractMongoClientConfiguration {
             // and Read Preference
             .readPreference(ReadPreference.primary())
             // Enable Snappy Compression to reduces network load
-            .compressorList(List.of(MongoCompressor.createSnappyCompressor()))
+            // note: disable  .compressorList(List.of(MongoCompressor.createSnappyCompressor()))
             .build();
     return MongoClients.create(settings);
   }

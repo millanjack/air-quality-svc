@@ -1,4 +1,4 @@
-package com.serjlemast.repository.raspberry.entity;
+package com.serjlemast.repository.entity;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;

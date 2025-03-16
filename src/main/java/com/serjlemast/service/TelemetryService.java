@@ -3,13 +3,14 @@ package com.serjlemast.service;
 import com.serjlemast.event.RaspberrySensorEvent;
 import com.serjlemast.model.raspberry.RaspberryInfo;
 import com.serjlemast.model.sensor.Sensor;
-import com.serjlemast.repository.raspberry.entity.RaspberryEntity;
-import com.serjlemast.repository.sensor.entity.SensorEntity;
+import com.serjlemast.repository.entity.RaspberryEntity;
+import com.serjlemast.repository.entity.SensorEntity;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -22,6 +23,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TelemetryService {
 
+  public static final String CREATED_FIELD = "created";
+  public static final String DEVICE_ID_FIELD = "deviceId";
+
+  public static final String UTC_TIME_ZONE = "UTC";
+
   private final MongoTemplate mongoTemplate;
 
   public void createOrUpdateData(RaspberrySensorEvent event) {
@@ -31,12 +37,15 @@ public class TelemetryService {
         .sensors()
         .forEach(
             sensor -> {
-              String sensorId = findOrCreateSensorEntity(raspberryId, sensor);
+              var sensorId = findOrCreateSensorEntity(raspberryId, sensor);
+              sensor
+                  .data()
+                  .forEach(data -> saveSensorData(sensorId, data.key(), data.val(), timestamp));
             });
   }
 
   private String createOrUpdateRaspberryInfo(RaspberryInfo info, LocalDateTime timestamp) {
-    var query = new Query(Criteria.where("deviceId").is(info.deviceId()));
+    var query = new Query(Criteria.where(DEVICE_ID_FIELD).is(info.deviceId()));
 
     var update =
         new Update()
@@ -46,10 +55,9 @@ public class TelemetryService {
             .setOnInsert("boardModel", info.boardModel())
             .setOnInsert("operatingSystem", info.operatingSystem())
             .setOnInsert("javaVersions", info.javaVersions())
-            .setOnInsert("created", LocalDateTime.now(ZoneId.of("UTC")));
+            .setOnInsert(CREATED_FIELD, LocalDateTime.now(ZoneId.of(UTC_TIME_ZONE)));
 
     return Optional.ofNullable(
-
             /*
              * When modifying a single document, both db.collection.findAndModify()
              * and the updateOne() method atomically update the document.
@@ -64,21 +72,21 @@ public class TelemetryService {
                 RaspberryEntity.class))
         .map(RaspberryEntity::getId)
         .orElseThrow(
-            () -> {
-              return new RuntimeException(
-                  "Creating or updating raspberry entity failed for " + info);
-            });
+            () -> new RuntimeException("Creating or updating raspberry entity failed for " + info));
   }
 
   private String findOrCreateSensorEntity(String raspberryId, Sensor sensor) {
     var query =
         new Query(
-            Criteria.where("deviceId").is(sensor.deviceId()).and("raspberryId").is(raspberryId));
+            Criteria.where(DEVICE_ID_FIELD)
+                .is(sensor.deviceId())
+                .and("raspberryId")
+                .is(raspberryId));
 
     var update =
         new Update()
             .setOnInsert("type", sensor.type())
-            .setOnInsert("created", LocalDateTime.now(ZoneId.of("UTC")));
+            .setOnInsert(CREATED_FIELD, LocalDateTime.now(ZoneId.of(UTC_TIME_ZONE)));
 
     return Optional.ofNullable(
             mongoTemplate.findAndModify(
@@ -91,5 +99,16 @@ public class TelemetryService {
             () ->
                 new RuntimeException(
                     "Failed to аштв or create sensor entity, deviceId: " + sensor.deviceId()));
+  }
+
+  public void saveSensorData(String sensorId, String key, Number val, LocalDateTime timestamp) {
+    var document =
+        new Document()
+            .append("sensorId", sensorId)
+            .append("key", key)
+            .append("val", val)
+            .append(CREATED_FIELD, timestamp);
+
+    mongoTemplate.getCollection("sensor_data").insertOne(document);
   }
 }

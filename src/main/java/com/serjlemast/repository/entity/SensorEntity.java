@@ -1,4 +1,4 @@
-package com.serjlemast.repository.sensor.entity;
+package com.serjlemast.repository.entity;
 
 import com.serjlemast.model.sensor.SensorData;
 import jakarta.validation.constraints.NotNull;
