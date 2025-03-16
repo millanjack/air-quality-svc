@@ -1,7 +1,7 @@
 package com.serjlemast.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.serjlemast.publisher.event.RaspberryEvent;
+import com.serjlemast.message.RaspberrySensorMessage;
 import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,8 +29,8 @@ public class SensorDataWebSocketHandler extends TextWebSocketHandler {
     sessions.remove(session);
   }
 
-  public void sendSensorData(RaspberryEvent data) throws Exception {
-    var json = objectMapper.writeValueAsString(data);
+  public void sendSensorData(RaspberrySensorMessage message) throws Exception {
+    var json = objectMapper.writeValueAsString(message);
     for (WebSocketSession session : sessions) {
       session.sendMessage(new TextMessage(json));
     }

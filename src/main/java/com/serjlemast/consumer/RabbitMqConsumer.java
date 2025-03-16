@@ -1,10 +1,9 @@
 package com.serjlemast.consumer;
 
 import com.rabbitmq.client.Channel;
-import com.serjlemast.event.CreateSensorDataEvent;
 import com.serjlemast.event.PublisherEventService;
 import com.serjlemast.handler.SensorDataWebSocketHandler;
-import com.serjlemast.publisher.event.RaspberryEvent;
+import com.serjlemast.message.RaspberrySensorMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -24,13 +23,13 @@ public class RabbitMqConsumer {
 
   @RabbitHandler
   public void handle(
-      RaspberryEvent data, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) {
-    log.info("  <<< Received message: {}", data);
+      RaspberrySensorMessage message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) {
+    log.info("  <<< Received message: {}", message);
     log.info("  <<< Delivery tag: {}", tag);
     log.info("  <<< Channel channel: {}", channel);
     try {
-      publisherEventService.publish(new CreateSensorDataEvent(data));
-      webSocketHandler.sendSensorData(data); // Send to WebSocket clients
+      //      publisherEventService.publish(new CreateSensorDataEvent(data));
+      webSocketHandler.sendSensorData(message); // Send to WebSocket clients
     } catch (Exception e) {
       log.error("Error sending WebSocket message", e);
     }
