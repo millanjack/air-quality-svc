@@ -20,9 +20,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
 @Slf4j
 @Configuration
+@EnableMongoAuditing
 @RequiredArgsConstructor
 public class MongoDbConfiguration extends AbstractMongoClientConfiguration {
   private final MongoProperties mongoProperties;
@@ -68,8 +70,8 @@ public class MongoDbConfiguration extends AbstractMongoClientConfiguration {
 
   private SocketSettings.Builder buildMongoSocketSettings(SocketSettings.Builder builder) {
     return builder //
-        .connectTimeout(3, TimeUnit.SECONDS)
-        .readTimeout(3, TimeUnit.SECONDS);
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS);
   }
 
   @Override
