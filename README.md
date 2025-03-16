@@ -8,6 +8,8 @@
 
 #### Project configuration
 
+"ws://localhost:8081/sensor-data";
+
 Add rabbitMQ properties to `.env` file:
 
 ```
