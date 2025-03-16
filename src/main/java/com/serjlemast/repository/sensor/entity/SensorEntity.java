@@ -7,7 +7,6 @@ import java.util.List;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,9 +22,8 @@ public class SensorEntity {
 
   @Id private String id;
 
+  @NotNull private String deviceId;
   @NotNull private String raspberryId;
-
-  private String deviceId; // todo NEW field
 
   /*
    * DHT_11,
@@ -36,6 +34,4 @@ public class SensorEntity {
   private List<SensorData> data;
 
   @CreatedDate private LocalDateTime created;
-
-  @LastModifiedDate private LocalDateTime updated;
 }

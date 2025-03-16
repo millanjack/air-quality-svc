@@ -24,12 +24,10 @@ public class RabbitMqConsumer {
   @RabbitHandler
   public void handle(
       RaspberrySensorMessage message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) {
-    log.info("  <<< Received message: {}", message);
-    log.info("  <<< Delivery tag: {}", tag);
-    log.info("  <<< Channel channel: {}", channel);
     try {
-      //      publisherEventService.publish(new CreateSensorDataEvent(data));
-      webSocketHandler.sendSensorData(message); // Send to WebSocket clients
+      log.info("Delivery tag - {}, chanel - {},  message: {}", tag, channel, message);
+      publisherEventService.publish(message);
+      webSocketHandler.sendSensorData(message);
     } catch (Exception e) {
       log.error("Error sending WebSocket message", e);
     }

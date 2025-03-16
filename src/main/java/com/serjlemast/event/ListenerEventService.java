@@ -14,8 +14,8 @@ public class ListenerEventService {
   private final TelemetryService telemetryService;
 
   @EventListener
-  public void handle(CreateSensorDataEvent event) {
-    log.info("Received CreateSensorDataEvent: {}", event);
-    telemetryService.save(event);
+  public void handle(RaspberrySensorEvent event) {
+    log.info("Received RaspberrySensorEvent: {}", event);
+    telemetryService.createOrUpdateData(event);
   }
 }
