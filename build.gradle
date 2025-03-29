@@ -36,17 +36,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-
-    // ui dependencies
-    implementation group: 'org.webjars', name: 'bootstrap', version: '5.3.3'
-    implementation group: 'org.webjars', name: 'angularjs', version: '1.8.3'
-    implementation group: 'org.webjars.bower', name: 'angular-cookies', version: '1.8.3'
-    implementation group: 'org.webjars.bower', name: 'angular-sanitize', version: '1.8.2'
-    implementation group: 'org.webjars', name: 'angular-ui-router', version: '1.0.30'
-    implementation group: 'org.webjars.npm', name: 'popper.js', version: '1.16.1'
-    implementation group: 'org.webjars.bower', name: 'jquery', version: '3.6.0'
-    // ui dependencies
-
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
