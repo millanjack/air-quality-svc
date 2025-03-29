@@ -11,7 +11,9 @@ app.component('monitor', {
 
         // websocket service
         $scope.sensorData = {};
+
         websocketService.connect();
+
         $scope.$watch(function () {
             return websocketService.data;
         }, function (newData) {

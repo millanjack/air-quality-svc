@@ -41,9 +41,6 @@ spring:
       database: ${APP_SERVICE_MONGO_DB:air-quality-db}
 
 app:
-  websocket:
-    url: ${APP_SERVICE_WEBSOCKET_URL:ws://localhost:8081/sensor-data}
-
   schedule:
     fixedRate: ${APP_SERVICE_SCHEDULER_INTERVAL:60000}  # Interval in milliseconds (60 seconds)
 
