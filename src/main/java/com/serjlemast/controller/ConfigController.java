@@ -16,8 +16,7 @@ public class ConfigController {
   private String webSocketUrl;
 
   @GetMapping
-  public Map<String, String> getConfig(HttpServletRequest request) {
-    String requestURI = request.getRequestURI(); //todo local host HOST URL
+  public Map<String, String> getConfig() {
     return Map.of("webSocketUrl", webSocketUrl);
   }
 }
