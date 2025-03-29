@@ -2,7 +2,7 @@
 
 app.factory('websocketService', function ($rootScope, $location) {
     let wsProtocol = $location.protocol() === "https" ? "wss://" : "ws://";
-    let newWsUrl = wsProtocol + $location.host() + "/sensor-data";
+    let newWsUrl = wsProtocol + $location.host() + ":" + $location.port() + "/sensor-data";
     let service = {
 
         data: {}, connect: function () {

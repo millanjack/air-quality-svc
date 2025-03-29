@@ -9,18 +9,14 @@ app.component('monitor', {
         tick();
         $interval(tick, 1000);
 
+        // websocket service
         $scope.sensorData = {};
-
-        websocketService.connect().then(function () {
-            $scope.sensorData = websocketService.data;
-        });
-
+        websocketService.connect();
         $scope.$watch(function () {
             return websocketService.data;
         }, function (newData) {
             $scope.sensorData = newData;
-        }, true);
-
+        });
 
     }, template: `
 <div class="container">
