@@ -1,40 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-time Sensor Data</title>
-    <!--    <script>-->
-    <!--        document.addEventListener("DOMContentLoaded", function () {-->
-    <!--            const socket = new WebSocket("ws://localhost:8080/sensor-data");-->
-    <!--            socket.onmessage = function (event) {-->
-    <!--                const data = JSON.parse(event.data);-->
-    <!--                document.getElementById("sensor-data").innerText = JSON.stringify(data, null, 2);-->
-    <!--            };-->
-    <!--            socket.onopen = () => console.log("WebSocket connected!");-->
-    <!--            socket.onerror = (error) => console.error("WebSocket Error: ", error);-->
-    <!--            socket.onclose = () => console.log("WebSocket closed!");-->
-    <!--        });-->
-    <!--    </script>-->
-</head>
-<body>
-<h1>Sensor Data</h1>
-<pre id="sensor-data"></pre>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en" ng-app="app">
 
-<script>
-    fetch('/config')
-        .then(response => response.json())
-        .then(config => {
-            const socket = new WebSocket(config.webSocketUrl);
-            socket.onmessage = function (event) {
-                const data = JSON.parse(event.data);
-                document.getElementById("sensor-data").innerText = JSON.stringify(data, null, 2);
-            };
-            socket.onopen = () => console.log("WebSocket connected!");
-            socket.onerror = (error) => console.error("WebSocket Error: ", error);
-            socket.onclose = () => console.log("WebSocket closed!");
-        })
-        .catch(error => console.error("Error loading config:", error));
-</script>
+<head>
+    <base href="/">
+    <meta charset="utf-8" content="application/http">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!--    <link rel="icon" href="img/favicon.ico" type="image/x-icon">-->
+
+    <title>RService</title>
+
+    <!-- styles -->
+    <link type="text/css" rel="stylesheet" href="webjars/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+
+    <!--  angularjs -->
+    <script src="webjars/angular/1.8.2/angular.min.js"></script>
+    <script src="webjars/angular-cookies/1.8.2/angular-cookies.min.js"></script>
+    <script src="webjars/angular-sanitize/1.8.2/angular-sanitize.min.js"></script>
+    <script src="webjars/angular-ui-router/1.0.20/angular-ui-router.min.js"></script>
+
+    <!--  script   -->
+    <script src="webjars/jquery/3.6.0/dist/jquery.min.js"></script>
+    <script src="webjars/popper.js/2.9.3/umd/popper.min.js"></script>
+    <script src="webjars/bootstrap/5.1.3/js/bootstrap.min.js"></script>
+    <script src="js/scripts/script.js"></script>
+
+    <!-- scripts -->
+    <script src="js/module/module.js"></script>
+    <script src="js/service/service.js"></script>
+    <script src="js/service/websocketService.js"></script>
+    <script src="js/filter/filter.js"></script>
+    <script src="js/controller/navBarController.js"></script>
+
+    <!--  components  -->
+    <script src="js/component/monitor.js"></script>
+    <script src="js/component/statistics.js"></script>
+</head>
+<body ng-app="app" class="d-flex flex-column h-100">
+<header>
+    <nav ng-controller="navBarController" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand">Real-Time data</a>
+            <button class="navbar-toggler" id="btn-menu-toggle"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarToggleCms"
+                    aria-controls="navbarToggleCms"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                    type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggleCms">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item" ng-click="hidingNavBar()">
+                        <a class="nav-link" ui-sref="monitor" ui-sref-active="active">Monitor</a>
+                    </li>
+                    <li class="nav-item" ng-click="hidingNavBar()">
+                        <a class="nav-link" ui-sref="statistics" ui-sref-active="active">Statistics</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<main>
+    <ui-view>
+        <div class="row justify-content-md-center" style="padding-top: 120px;">
+            <div class="row">
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4">
+                    <div class="loader"></div>
+                </div>
+                <div class="col-lg-4"></div>
+            </div>
+        </div>
+    </ui-view>
+</main>
+<footer class="footer mt-auto py-3 bg-dark fixed-bottom">
+    <div class="container">
+        <span class="text-muted">Version: 1.0.0</span>
+    </div>
+</footer>
 </body>
 </html>
