@@ -1,15 +1,30 @@
 'use strict';
 
 app.component('statistics', {
-    controller: function ($location) {
+    controller: function ($location,  $scope) {
 
         let url = $location.absUrl().concat('-ui.html');
 
+        $scope.myData = [
+            ["Chocolate", 5],
+            ["Rhubarb compote", 2],
+            ["Crêpe Suzette", 2],
+            ["American blueberry", 2],
+            ["Buttermilk", 1]
+        ];
+
     }, template: `
   <div class="container">
-    <h1 class="mt-5">Sticky footer</h1>
-    <p class="lead">Pin a footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS.</p>
-    <p>Use <a href="/docs/5.0/examples/sticky-footer-navbar/">the sticky footer with a fixed navbar</a> if need be, too.</p>
+
+      <div
+            anychart
+            ac-type="pie"
+            ac-data="myData"
+            ac-title="Simple Pie Chart"
+            ac-legend="true"
+            style="width: 100%; height: 400px;">
+      </div>
+    
   </div>
 `
 });

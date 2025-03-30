@@ -1,6 +1,6 @@
 'use strict';
 
-let app = angular.module('app', ['ui.router', 'ngSanitize']);
+let app = angular.module('app', ['ui.router', 'ngSanitize', 'anychart-angularjs']);
 
 app.config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
     $locationProvider.html5Mode(true);
