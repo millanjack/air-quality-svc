@@ -23,12 +23,12 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.xerial.snappy:snappy-java:${snappyVersion}"
-    implementation 'jakarta.validation:jakarta.validation-api:3.1.1'
+    implementation "jakarta.validation:jakarta.validation-api:${jakartaValidationVersion}"
     implementation "com.fasterxml.jackson.module:jackson-modules-java8:${jacksonVersion}"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
     implementation "io.mongock:mongock-springboot-v3:${mongockVersion}"

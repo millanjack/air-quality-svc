@@ -68,8 +68,8 @@ public class MongoDbConfiguration extends AbstractMongoClientConfiguration {
 
   private SocketSettings.Builder buildMongoSocketSettings(SocketSettings.Builder builder) {
     return builder //
-        .connectTimeout(15, TimeUnit.SECONDS)
-        .readTimeout(15, TimeUnit.SECONDS);
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS);
   }
 
   @Override
