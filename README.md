@@ -71,6 +71,31 @@ consistency and readability.
 project: google-java-format,
 link: https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config
 
+#### Spring Actuator
+
+* [Spring Boot Actuator: Health check, Auditing, Metrics gathering and Monitoring](https://www.callicoder.com/spring-boot-actuator/#:~:text=You%20can%20enable%20or%20disable,the%20identifier%20for%20the%20endpoint)
+
+Endpoint ID Description:
+
+* info - Displays information about your application.
+* health - Displays your application’s health status.
+
+Enable info and health endpoint in *.yaml file
+
+```
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+```
+
+Actuator endpoints:
+
+* /actuator
+* /actuator/health
+* /actuator/info
+
 #### Gradle
 
 ##### Gradle Versions Plugin
