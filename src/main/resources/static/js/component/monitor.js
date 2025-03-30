@@ -6,7 +6,9 @@ app.component('monitor', {
         let tick = function () {
             $scope.clock = Date.now();
         }
+
         tick();
+
         $interval(tick, 1000);
 
         // websocket service
@@ -62,8 +64,7 @@ app.component('monitor', {
                  <br>
                <br>
                </div>
-               
-  
+    
             </div>
             <div class="card-footer text-muted">
             </div>

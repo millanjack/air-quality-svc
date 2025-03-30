@@ -2,7 +2,8 @@
 
 app.factory('RestAPI', ['$http', '$location', function ($http, $location) {
     let Response = {};
-    let baseUrl = $location.absUrl().concat('rest/v1');
+
+    let baseUrl = $location.host() + ":" + $location.port() + '/v1/api';
 
     Response.get = function (url) {
         return $http.get(baseUrl + url);
