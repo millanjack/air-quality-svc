@@ -1,30 +1,66 @@
 'use strict';
 
 app.component('statistics', {
-    controller: function ($location,  $scope) {
-
+    controller: function ($location, $scope) {
         let url = $location.absUrl().concat('-ui.html');
 
-        $scope.myData = [
-            ["Chocolate", 5],
-            ["Rhubarb compote", 2],
-            ["Crêpe Suzette", 2],
-            ["American blueberry", 2],
-            ["Buttermilk", 1]
+        $scope.labels = ["Chocolate", "Rhubarb compote", "Crêpe Suzette", "American blueberry", "Buttermilk"];
+        $scope.data = [
+            [65, 59, 80, 81, 56, 55, 40],
+            [28, 48, 40, 19, 86, 27, 90]
         ];
 
-    }, template: `
-  <div class="container">
-
-      <div
-            anychart
-            ac-type="pie"
-            ac-data="myData"
-            ac-title="Simple Pie Chart"
-            ac-legend="true"
-            style="width: 100%; height: 400px;">
+        $scope.options = {
+            responsive: true,
+            legend: {
+                display: true
+            },
+            elements: {
+                arc: {
+                    backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"]
+                }
+            }
+        };
+    },
+    template: `
+<div class="container">
+   <div class="row" style="padding-top: 40px;padding-bottom: 40px">
+      <div class="col-12">
+         <div class="card text-center">
+            <div class="card-header">
+                Statistics
+               <br>
+            </div>
+            <div class="card-body">
+              <h5>DHT11:017</h5>  
+               <div class="row">
+              <div class="col-12 col-md-6">
+                <canvas 
+                    class="chart chart-line" 
+                    chart-data="data" 
+                    chart-labels="labels"  
+                    chart-series="series" 
+                    chart-click="onClick">
+                 </canvas> 
+               </div>
+              <div class="col-12 col-md-6">
+                <canvas 
+                    class="chart chart-line" 
+                    chart-data="data" 
+                    chart-labels="labels"  
+                    chart-series="series" 
+                    chart-click="onClick">
+                 </canvas> 
+               </div>
+               </div>
+               <br>
+               <br>
+            </div>
+            <div class="card-footer text-muted">
+            </div>
+         </div>
       </div>
-    
-  </div>
-`
+   </div>
+</div>
+    `
 });
