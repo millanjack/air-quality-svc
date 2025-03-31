@@ -40,7 +40,15 @@ public class TelemetryService {
               var sensorId = findOrCreateSensorEntity(raspberryId, sensor);
               sensor
                   .data()
-                  .forEach(data -> saveSensorData(sensorId, data.key(), data.val(), timestamp));
+                  .forEach(
+                      data ->
+                          saveSensorData(
+                              sensorId,
+                              sensor.deviceId(),
+                              sensor.type(),
+                              data.key(),
+                              data.val(),
+                              timestamp));
             });
   }
 
@@ -101,9 +109,18 @@ public class TelemetryService {
                     "Failed to аштв or create sensor entity, deviceId: " + sensor.deviceId()));
   }
 
-  public void saveSensorData(String sensorId, String key, Number val, LocalDateTime timestamp) {
+  public void saveSensorData(
+      String sensorId,
+      String deviceId,
+      String type,
+      String key,
+      Number val,
+      LocalDateTime timestamp) {
     var document =
         new Document()
+            .append("sensorId", sensorId)
+            .append(DEVICE_ID_FIELD, deviceId)
+            .append("type", type)
             .append("sensorId", sensorId)
             .append("key", key)
             .append("val", val)

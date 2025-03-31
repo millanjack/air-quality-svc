@@ -1,4 +1,4 @@
-package com.serjlemast.controller;
+package com.serjlemast.controller.ping;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
