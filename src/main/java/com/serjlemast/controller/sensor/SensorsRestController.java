@@ -1,8 +1,7 @@
 package com.serjlemast.controller.sensor;
 
-import com.serjlemast.repository.entity.SensorEntity;
+import com.serjlemast.controller.sensor.dto.SensorResponse;
 import com.serjlemast.service.TelemetryService;
-
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,7 @@ public class SensorsRestController {
   private final TelemetryService telemetryService;
 
   @GetMapping("/sensors")
-  public ResponseEntity<List<SensorEntity>> sensors() {
+  public ResponseEntity<List<SensorResponse>> sensors() {
     return ResponseEntity.ok(telemetryService.getAllSensorsWithLimitedData());
   }
 }

@@ -17,15 +17,8 @@ public class SensorDataEntity {
 
   @NotNull private String sensorId;
 
-  @NotNull private String deviceId;
-
-  /*
-   * DHT_11,
-   * DHT_22
-   */
-  private String type;
-
   @NotNull private String key;
+
   @NotNull private Double val;
 
   @CreatedDate private LocalDateTime created;

@@ -1,22 +1,28 @@
 package com.serjlemast.service;
 
+import com.serjlemast.controller.sensor.dto.SensorDataResponse;
+import com.serjlemast.controller.sensor.dto.SensorResponse;
 import com.serjlemast.event.RaspberrySensorEvent;
 import com.serjlemast.model.raspberry.RaspberryInfo;
 import com.serjlemast.model.sensor.Sensor;
+import com.serjlemast.repository.SensorDataRepository;
+import com.serjlemast.repository.SensorRepository;
 import com.serjlemast.repository.entity.RaspberryEntity;
 import com.serjlemast.repository.entity.SensorEntity;
+import com.serjlemast.service.dto.SensorDataDto;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -33,6 +39,8 @@ public class TelemetryService {
   public static final String UTC_TIME_ZONE = "UTC";
 
   private final MongoTemplate mongoTemplate;
+  private final SensorRepository sensorRepository;
+  private final SensorDataRepository sensorDataRepository;
 
   public void createOrUpdateData(RaspberrySensorEvent event) {
     var timestamp = event.timestamp();
@@ -44,15 +52,7 @@ public class TelemetryService {
               var sensorId = findOrCreateSensorEntity(raspberryId, sensor);
               sensor
                   .data()
-                  .forEach(
-                      data ->
-                          saveSensorData(
-                              sensorId,
-                              sensor.deviceId(),
-                              sensor.type(),
-                              data.key(),
-                              data.val(),
-                              timestamp));
+                  .forEach(data -> saveSensorData(sensorId, data.key(), data.val(), timestamp));
             });
   }
 
@@ -113,18 +113,10 @@ public class TelemetryService {
                     "Failed to аштв or create sensor entity, deviceId: " + sensor.deviceId()));
   }
 
-  public void saveSensorData(
-      String sensorId,
-      String deviceId,
-      String type,
-      String key,
-      Number val,
-      LocalDateTime timestamp) {
+  public void saveSensorData(String sensorId, String key, Number val, LocalDateTime timestamp) {
     var document =
         new Document()
             .append("sensorId", sensorId)
-            .append(DEVICE_ID_FIELD, deviceId)
-            .append("type", type)
             .append("sensorId", sensorId)
             .append("key", key)
             .append("val", val)
@@ -133,16 +125,48 @@ public class TelemetryService {
     mongoTemplate.getCollection("sensor_data").insertOne(document);
   }
 
-  public List<SensorEntity> getAllSensorsWithLimitedData() {
-    Aggregation aggregation =
-        Aggregation.newAggregation(
-            Aggregation.lookup("sensor_data", DEVICE_ID_FIELD, DEVICE_ID_FIELD, "data"),
-            Aggregation.sort(Sort.Direction.DESC, "data.created"),
-            Aggregation.project(
-                "id", DEVICE_ID_FIELD, "raspberryId", "type", CREATED_FIELD, "data"));
+  public List<SensorResponse> getAllSensorsWithLimitedData() {
+    List<SensorResponse> response = new ArrayList<>();
 
-    AggregationResults<SensorEntity> results =
-        mongoTemplate.aggregate(aggregation, "sensor", SensorEntity.class);
-    return results.getMappedResults();
+    sensorRepository
+        .findAll()
+        .forEach(
+            sensor -> {
+              var sensorId = sensor.getId();
+              var sensorDataEntities =
+                  sensorDataRepository.findTop10BySensorIdOrderByCreatedDesc(sensorId);
+
+              Map<String, List<SensorDataDto>> map =
+                  sensorDataEntities.stream()
+                      .map(
+                          data ->
+                              new SensorDataDto(data.getKey(), data.getVal(), data.getCreated()))
+                      .collect(Collectors.groupingBy(SensorDataDto::key, Collectors.toList()));
+
+              List<SensorDataResponse> sensorDataResponses = new ArrayList<>();
+              map.forEach(
+                  (key, value) -> {
+                    Map<LocalDateTime, Double> values =
+                        value.stream()
+                            .collect(
+                                Collectors.toMap(
+                                    SensorDataDto::created,
+                                    SensorDataDto::val,
+                                    (first, last) -> last,
+                                    LinkedHashMap::new));
+                    sensorDataResponses.add(
+                        new SensorDataResponse(key, values.keySet(), values.values()));
+                  });
+
+              response.add(
+                  new SensorResponse(
+                      sensorId,
+                      sensor.getDeviceId(),
+                      sensor.getRaspberryId(),
+                      sensor.getType(),
+                      sensorDataResponses));
+            });
+
+    return response;
   }
 }

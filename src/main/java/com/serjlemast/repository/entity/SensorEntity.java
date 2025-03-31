@@ -31,7 +31,5 @@ public class SensorEntity {
    */
   private String type;
 
-  private List<SensorData> data;
-
   @CreatedDate private LocalDateTime created;
 }
