@@ -1,7 +1,7 @@
 'use strict';
 
 app.component('monitor', {
-    controller: function (RestAPI, $scope, $transitions, $interval, websocketService) {
+    controller: function (RestAPI, $scope, $rootScope, $transitions, $interval, websocketService) {
 
         let tick = function () {
             $scope.clock = Date.now();
@@ -20,6 +20,8 @@ app.component('monitor', {
             return websocketService.data;
         }, function (newData) {
             $scope.sensorData = newData;
+            // Raspberry pi controller
+            $rootScope.piController = newData.info
         });
 
         // round-progress settings
@@ -52,22 +54,12 @@ app.component('monitor', {
                <br>
                {{ clock | date:'medium'}}
             </div>
-            <div class="card-body">
-               <h5 class="card-title">Raspberry PI controller</h5>
-               <pre>deviceId: {{ sensorData.info.deviceId }}</pre>
-               <pre>boardModel: {{ sensorData.info.boardModel }}</pre>
-               <pre>operatingSystem: {{ sensorData.info.operatingSystem }}</pre>
-               <pre>javaVersions: {{ sensorData.info.javaVersions }}</pre>
-               <pre>jvMemoryMb: {{ sensorData.info.jvMemoryMb }}</pre>
-               <pre>boardTemperature: {{ sensorData.info.boardTemperature }}</pre>
-               
-               <br>
-               <br>
-               
+            <div class="card-body">              
                <div ng-repeat="sensor in sensorData.sensors track by $index">
-                 <p> Device: <b>{{ sensor.deviceId }}</b> </p>
-                 <p> Type: <b>{{ sensor.type }}</b></p>
+                 <p> Sensor: <b>{{ sensor.deviceId }}</b> ({{ sensor.type }})</p>
                  <br>
+                 <div class="row justify-content-md-center">
+                  <div class="col-12 col-lg-4">
                   <h5>Temperature</h5>
                   <round-progress
                      max="maxTemp"
@@ -84,7 +76,8 @@ app.component('monitor', {
                      animation="easeInOutQuad"
                      animation-delay="0"></round-progress>
                   <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'temperature_celsius'})[0].val }} °C</strong></p>
-             
+                 </div>
+                 <div class="col-12 col-lg-4">
                   <h5>Humidity</h5>
                   <round-progress
                      max="maxHumidity"
@@ -101,13 +94,14 @@ app.component('monitor', {
                      animation="easeInOutQuad"
                      animation-delay="0"></round-progress>
                   <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'humidity'})[0].val }} %</strong></p>
-             
+                 </div>
                  <br>
                  <br>
+                 </div>
                </div>
             </div>
+            <div class="card-footer text-muted"><br></div>
          </div>
-            <div class="card-footer text-muted"></div>
       </div>
    </div>
 </div>

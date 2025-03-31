@@ -2,6 +2,7 @@
 
 app.component('statistics', {
     controller: function ($location, $scope, $interval) {
+
         let url = $location.absUrl().concat('-ui.html');
 
         $scope.labels = ["Chocolate", "Rhubarb compote", "Crêpe Suzette", "American blueberry", "Buttermilk"];
@@ -16,7 +17,6 @@ app.component('statistics', {
                 }
             }
         };
-
 
     }, template: `
 <div class="container">
@@ -52,7 +52,7 @@ app.component('statistics', {
                <br>
                <br>
             </div>
-            <div class="card-footer text-muted">
+            <div class="card-footer text-muted"><br></div>
             </div>
          </div>
       </div>

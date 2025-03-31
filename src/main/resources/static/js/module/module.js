@@ -10,6 +10,8 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
     let states = [{
         name: 'monitor', url: '/', component: 'monitor'
     }, {
+        name: 'controller', url: '/controller', component: 'controller'
+    }, {
         name: 'statistics', url: '/statistics', component: 'statistics'
     }];
 
