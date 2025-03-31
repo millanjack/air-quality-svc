@@ -1,7 +1,7 @@
 'use strict';
 
-app.component('statistics', {
-    controller: function ($location, $scope, $interval) {
+app.component('sensors', {
+    controller: function ($location, $scope) {
 
         let url = $location.absUrl().concat('-ui.html');
 
@@ -24,7 +24,7 @@ app.component('statistics', {
       <div class="col-12">
          <div class="card text-center">
             <div class="card-header">
-               Statistics
+               Sensors
                <br>
             </div>
             <div class="card-body">

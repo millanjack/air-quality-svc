@@ -7,12 +7,16 @@ import com.serjlemast.repository.entity.RaspberryEntity;
 import com.serjlemast.repository.entity.SensorEntity;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -127,5 +131,18 @@ public class TelemetryService {
             .append(CREATED_FIELD, timestamp);
 
     mongoTemplate.getCollection("sensor_data").insertOne(document);
+  }
+
+  public List<SensorEntity> getAllSensorsWithLimitedData() {
+    Aggregation aggregation =
+        Aggregation.newAggregation(
+            Aggregation.lookup("sensor_data", DEVICE_ID_FIELD, DEVICE_ID_FIELD, "data"),
+            Aggregation.sort(Sort.Direction.DESC, "data.created"),
+            Aggregation.project(
+                "id", DEVICE_ID_FIELD, "raspberryId", "type", CREATED_FIELD, "data"));
+
+    AggregationResults<SensorEntity> results =
+        mongoTemplate.aggregate(aggregation, "sensor", SensorEntity.class);
+    return results.getMappedResults();
   }
 }

@@ -12,7 +12,7 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
     }, {
         name: 'controller', url: '/controller', component: 'controller'
     }, {
-        name: 'statistics', url: '/statistics', component: 'statistics'
+        name: 'sensors', url: '/sensors', component: 'sensors'
     }];
 
     states.forEach(function (state) {
