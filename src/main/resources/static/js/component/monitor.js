@@ -22,10 +22,9 @@ app.component('monitor', {
             $scope.sensorData = newData;
         });
 
-        // settings
+        // round-progress settings
         $scope.maxTemp = 50;
         $scope.maxHumidity = 100;
-        $scope.stroke = 12;
 
         $scope.getSensorTemperatureData = function (sensor) {
             let data = sensor.data.find(d => d.key === 'temperature_celsius');
@@ -36,7 +35,6 @@ app.component('monitor', {
             let data = sensor.data.find(d => d.key === 'humidity');
             return data ? data.val : null;
         };
-
 
     }, template: `
 <div class="container">
@@ -67,18 +65,17 @@ app.component('monitor', {
                <br>
                
                <div ng-repeat="sensor in sensorData.sensors track by $index">
-                 <p> Device: {{ sensor.deviceId }} </p>
-                 <p> Type: {{ sensor.type }} </p>
+                 <p> Device: <b>{{ sensor.deviceId }}</b> </p>
+                 <p> Type: <b>{{ sensor.type }}</b></p>
                  <br>
-                 <br>
-                  <h3>Temperature</h3>
+                  <h5>Temperature</h5>
                   <round-progress
                      max="maxTemp"
                      current="getSensorTemperatureData(sensor)"
                      color="#369cf7"
                      bgcolor="#eaeaea"
-                     radius="100"
-                     stroke="20"
+                     radius="130"
+                     stroke="25"
                      semi="true"
                      rounded="true"
                      clockwise="true"
@@ -86,16 +83,16 @@ app.component('monitor', {
                      duration="800"
                      animation="easeInOutQuad"
                      animation-delay="0"></round-progress>
-                  <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'temperature_celsius'})[0].val }}°C</strong></p>
+                  <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'temperature_celsius'})[0].val }} °C</strong></p>
              
-                  <h3>Humidity</h3>
+                  <h5>Humidity</h5>
                   <round-progress
                      max="maxHumidity"
                      current="getSensorHumidityData(sensor)"
                      color="#8068a1"
                      bgcolor="#eaeaea"
-                     radius="100"
-                     stroke="20"
+                     radius="130"
+                     stroke="25"
                      semi="true"
                      rounded="true"
                      clockwise="true"
@@ -103,7 +100,7 @@ app.component('monitor', {
                      duration="800"
                      animation="easeInOutQuad"
                      animation-delay="0"></round-progress>
-                  <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'humidity'})[0].val }}%</strong></p>
+                  <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'humidity'})[0].val }} %</strong></p>
              
                  <br>
                  <br>
