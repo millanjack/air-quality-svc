@@ -95,9 +95,9 @@ app.component('monitor', {
                      animation-delay="0"></round-progress>
                   <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'humidity'})[0].val }} %</strong></p>
                  </div>
-                 <br>
-                 <br>
                  </div>
+                 <br>
+                 <br>
                </div>
             </div>
             <div class="card-footer text-muted"><br></div>
