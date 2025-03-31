@@ -14,7 +14,7 @@ app.component('controller', {
    <div class="row" style="padding-top: 40px;padding-bottom: 40px">
       <div class="col-12">
          <div class="card text-center">
-            <div class="card-header">Raspberry PI controller</div>
+            <div class="card-header">Raspberry PI</div>
             <br>
             <div class="card-body">
                <pre><b>Device id:</b> {{ piController.deviceId }}</pre>
