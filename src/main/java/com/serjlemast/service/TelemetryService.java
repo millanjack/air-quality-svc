@@ -44,19 +44,19 @@ public class TelemetryService {
 
   public void createOrUpdateData(RaspberrySensorEvent event) {
     var timestamp = event.timestamp();
-    var raspberryId = createOrUpdateRaspberryInfo(event.info(), timestamp);
+    createOrUpdateRaspberryInfo(event.info(), timestamp);
     event
         .sensors()
         .forEach(
             sensor -> {
-              var sensorId = findOrCreateSensorEntity(raspberryId, sensor);
+              var sensorId = findOrCreateSensorEntity(sensor);
               sensor
                   .data()
                   .forEach(data -> saveSensorData(sensorId, data.key(), data.val(), timestamp));
             });
   }
 
-  private String createOrUpdateRaspberryInfo(RaspberryInfo info, LocalDateTime timestamp) {
+  private void createOrUpdateRaspberryInfo(RaspberryInfo info, LocalDateTime timestamp) {
     var query = new Query(Criteria.where(DEVICE_ID_FIELD).is(info.deviceId()));
 
     var update =
@@ -69,7 +69,7 @@ public class TelemetryService {
             .setOnInsert("javaVersions", info.javaVersions())
             .setOnInsert(CREATED_FIELD, LocalDateTime.now(ZoneId.of(UTC_TIME_ZONE)));
 
-    return Optional.ofNullable(
+    Optional.ofNullable(
             /*
              * When modifying a single document, both db.collection.findAndModify()
              * and the updateOne() method atomically update the document.
@@ -87,13 +87,8 @@ public class TelemetryService {
             () -> new RuntimeException("Creating or updating raspberry entity failed for " + info));
   }
 
-  private String findOrCreateSensorEntity(String raspberryId, Sensor sensor) {
-    var query =
-        new Query(
-            Criteria.where(DEVICE_ID_FIELD)
-                .is(sensor.deviceId())
-                .and("raspberryId")
-                .is(raspberryId));
+  private String findOrCreateSensorEntity(Sensor sensor) {
+    var query = new Query(Criteria.where(DEVICE_ID_FIELD).is(sensor.deviceId()));
 
     var update =
         new Update()
@@ -134,7 +129,7 @@ public class TelemetryService {
             sensor -> {
               var sensorId = sensor.getId();
               var sensorDataEntities =
-                  sensorDataRepository.findTop100BySensorIdOrderByCreatedDesc(sensorId);
+                  sensorDataRepository.findTop120BySensorIdOrderByCreatedDesc(sensorId);
 
               Map<String, List<SensorDataDto>> map =
                   sensorDataEntities.stream()
