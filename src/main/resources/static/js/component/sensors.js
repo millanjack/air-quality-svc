@@ -1,9 +1,11 @@
 'use strict';
 
 app.component('sensors', {
-    controller: function ($location, $scope) {
+    controller: function ($location, $scope, restService) {
 
-        let url = $location.absUrl().concat('-ui.html');
+        let response = restService.get('/sensors')
+
+        console.log("re" + response.data)
 
         $scope.labels = ["Chocolate", "Rhubarb compote", "Crêpe Suzette", "American blueberry", "Buttermilk"];
         $scope.data = [[65, 59, 80, 81, 56, 55, 40], [28, 48, 40, 19, 86, 27, 90]];

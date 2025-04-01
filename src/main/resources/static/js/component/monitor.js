@@ -1,7 +1,7 @@
 'use strict';
 
 app.component('monitor', {
-    controller: function (RestAPI, $scope, $rootScope, $transitions, $interval, websocketService) {
+    controller: function ($scope, $rootScope, $transitions, $interval, websocketService) {
 
         let tick = function () {
             $scope.clock = Date.now();
