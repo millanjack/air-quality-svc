@@ -27,6 +27,8 @@ app.component('monitor', {
         // round-progress settings
         $scope.maxTemp = 50;
         $scope.maxHumidity = 100;
+        $scope.maxTVOC = 10000;
+        $scope.maxECO2 = 10000;
 
         $scope.getSensorTemperatureData = function (sensor) {
             let data = sensor.data.find(d => d.key === 'temperature_celsius');
@@ -35,6 +37,16 @@ app.component('monitor', {
 
         $scope.getSensorHumidityData = function (sensor) {
             let data = sensor.data.find(d => d.key === 'humidity');
+            return data ? data.val : null;
+        };
+
+        $scope.getSensorTVOCData = function (sensor) {
+            let data = sensor.data.find(d => d.key === 'tvoc');
+            return data ? data.val : null;
+        };
+
+        $scope.getSensorECO2Data = function (sensor) {
+            let data = sensor.data.find(d => d.key === 'eco2');
             return data ? data.val : null;
         };
 
@@ -54,50 +66,93 @@ app.component('monitor', {
                <br>
                {{ clock | date:'medium'}}
             </div>
-            <div class="card-body">              
+            <div class="card-body">
                <div ng-repeat="sensor in sensorData.sensors track by $index">
-                 <p> Sensor: <b>{{ sensor.deviceId }}</b> ({{ sensor.type }})</p>
-                 <br>
-                 <div class="row justify-content-md-center">
-                  <div class="col-12 col-lg-4">
-                  <h5>Temperature</h5>
-                  <round-progress
-                     max="maxTemp"
-                     current="getSensorTemperatureData(sensor)"
-                     color="#369cf7"
-                     bgcolor="#eaeaea"
-                     radius="130"
-                     stroke="25"
-                     semi="true"
-                     rounded="true"
-                     clockwise="true"
-                     responsive="false"
-                     duration="800"
-                     animation="easeInOutQuad"
-                     animation-delay="0"></round-progress>
-                  <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'temperature_celsius'})[0].val }} °C</strong></p>
-                 </div>
-                 <div class="col-12 col-lg-4">
-                  <h5>Humidity</h5>
-                  <round-progress
-                     max="maxHumidity"
-                     current="getSensorHumidityData(sensor)"
-                     color="#8068a1"
-                     bgcolor="#eaeaea"
-                     radius="130"
-                     stroke="25"
-                     semi="true"
-                     rounded="true"
-                     clockwise="true"
-                     responsive="false"
-                     duration="800"
-                     animation="easeInOutQuad"
-                     animation-delay="0"></round-progress>
-                  <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'humidity'})[0].val }} %</strong></p>
-                 </div>
-                 </div>
-                 <br>
-                 <br>
+                  <p> Sensor: <b>{{ sensor.deviceId }}</b> ({{ sensor.type }})</p>
+                  <br>
+                  <div ng-if="sensor.type !== 'CCS811'">
+                     <div class="row justify-content-md-center">
+                        <div class="col-12 col-lg-4">
+                           <h5>Temperature</h5>
+                           <round-progress
+                              max="maxTemp"
+                              current="getSensorTemperatureData(sensor)"
+                              color="#369cf7"
+                              bgcolor="#eaeaea"
+                              radius="130"
+                              stroke="25"
+                              semi="true"
+                              rounded="true"
+                              clockwise="true"
+                              responsive="false"
+                              duration="800"
+                              animation="easeInOutQuad"
+                              animation-delay="0"></round-progress>
+                           <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'temperature_celsius'})[0].val }} °C</strong></p>
+                        </div>
+                        <div class="col-12 col-lg-4">
+                           <h5>Humidity</h5>
+                           <round-progress
+                              max="maxHumidity"
+                              current="getSensorHumidityData(sensor)"
+                              color="#8068a1"
+                              bgcolor="#eaeaea"
+                              radius="130"
+                              stroke="25"
+                              semi="true"
+                              rounded="true"
+                              clockwise="true"
+                              responsive="false"
+                              duration="800"
+                              animation="easeInOutQuad"
+                              animation-delay="0"></round-progress>
+                           <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'humidity'})[0].val }} %</strong></p>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- Если сенсор CCS811, отображаем TVOC и eCO2 -->
+                  <div ng-if="sensor.type === 'CCS811'">
+                     <div class="row justify-content-md-center">
+                        <div class="col-12 col-lg-4">
+                           <h5>TVOC</h5>
+                           <round-progress
+                              max="maxTVOC"
+                              current="getSensorTVOCData(sensor)"
+                              color="#ff9900"
+                              bgcolor="#eaeaea"
+                              radius="130"
+                              stroke="25"
+                              semi="true"
+                              rounded="true"
+                              clockwise="true"
+                              responsive="false"
+                              duration="800"
+                              animation="easeInOutQuad"
+                              animation-delay="0"></round-progress>
+                           <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'tvoc'})[0].val }} ppb</strong></p>
+                        </div>
+                        <div class="col-12 col-lg-4">
+                           <h5>eCO₂</h5>
+                           <round-progress
+                              max="maxECO2"
+                              current="getSensorECO2Data(sensor)"
+                              color="#ff3333"
+                              bgcolor="#eaeaea"
+                              radius="130"
+                              stroke="25"
+                              semi="true"
+                              rounded="true"
+                              clockwise="true"
+                              responsive="false"
+                              duration="800"
+                              animation="easeInOutQuad"
+                              animation-delay="0"></round-progress>
+                           <p style="font-size: 20px; margin-top: 10px;"><strong>{{ (sensor.data | filter:{key:'eco2'})[0].val }} ppm</strong></p>
+                        </div>
+                     </div>
+                  </div>
+                  <br>
+                  <br>
                </div>
             </div>
             <div class="card-footer text-muted"><br></div>
