@@ -3,22 +3,24 @@
 app.component('sensors', {
     controller: function ($location, $scope, restService) {
 
-        let response = restService.get('/sensors')
+        $scope.sensors = [];
 
-        console.log("re" + response.data)
+        restService.get('/sensors').then(function (response) {
+            $scope.sensors = response.data.map(sensor => {
+                let tempData = sensor.data.find(d => d.key === "temperature_celsius");
+                let humidityData = sensor.data.find(d => d.key === "humidity");
 
-        $scope.labels = ["Chocolate", "Rhubarb compote", "Crêpe Suzette", "American blueberry", "Buttermilk"];
-        $scope.data = [[65, 59, 80, 81, 56, 55, 40], [28, 48, 40, 19, 86, 27, 90]];
-
-        $scope.options = {
-            responsive: true, legend: {
-                display: true
-            }, elements: {
-                arc: {
-                    backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"]
-                }
-            }
-        };
+                return {
+                    ...sensor,
+                    labels: tempData ? tempData.dates.map(d => new Date(d).toLocaleTimeString()) : [],
+                    chartData: tempData ? [tempData.values] : [[]],
+                    series: 'Temperature (°C)',
+                    humidityLabels: humidityData ? humidityData.dates.map(d => new Date(d).toLocaleTimeString()) : [],
+                    humidityData: humidityData ? [humidityData.values] : [[]],
+                    humiditySeries: 'Humidity (%)'
+                };
+            });
+        });
 
     }, template: `
 <div class="container">
@@ -30,32 +32,31 @@ app.component('sensors', {
                <br>
             </div>
             <div class="card-body">
-               <h5>DHT11:017</h5>
-               <div class="row">
-                  <div class="col-12 col-md-6">
-                     <canvas 
-                        class="chart chart-line" 
-                        chart-data="data" 
-                        chart-labels="labels"  
-                        chart-series="series" 
-                        chart-click="onClick">
-                     </canvas>
+               <div ng-repeat="sensor in sensors track by $index">
+                  <h5>{{ sensor.deviceId }} ({{ sensor.type }})</h5>
+                  <div class="row">
+                     <div class="col-12 col-md-6">
+                         {{sensor.series}}
+                        <canvas 
+                           class="chart chart-line" 
+                           chart-data="sensor.chartData" 
+                           chart-labels="sensor.labels">
+                        </canvas>
+                     </div>
+                     <div class="col-12 col-md-6">
+                        {{sensor.humiditySeries}}
+                        <canvas 
+                           class="chart chart-line" 
+                           chart-data="sensor.humidityData" 
+                           chart-labels="sensor.humidityLabels">
+                        </canvas>
+                     </div>
                   </div>
-                  <div class="col-12 col-md-6">
-                     <canvas 
-                        class="chart chart-line" 
-                        chart-data="data" 
-                        chart-labels="labels"  
-                        chart-series="series" 
-                        chart-click="onClick">
-                     </canvas>
-                  </div>
+                  <br>
+                  <br>
                </div>
-               <br>
-               <br>
             </div>
             <div class="card-footer text-muted"><br></div>
-            </div>
          </div>
       </div>
    </div>

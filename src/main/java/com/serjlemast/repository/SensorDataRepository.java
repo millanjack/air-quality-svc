@@ -7,5 +7,5 @@ import com.serjlemast.repository.entity.SensorDataEntity;
 
 public interface SensorDataRepository extends MongoRepository<SensorDataEntity, String> {
 
-  List<SensorDataEntity> findTop10BySensorIdOrderByCreatedDesc(String sensorId);
+  List<SensorDataEntity> findTop100BySensorIdOrderByCreatedDesc(String sensorId);
 }

@@ -134,7 +134,7 @@ public class TelemetryService {
             sensor -> {
               var sensorId = sensor.getId();
               var sensorDataEntities =
-                  sensorDataRepository.findTop10BySensorIdOrderByCreatedDesc(sensorId);
+                  sensorDataRepository.findTop100BySensorIdOrderByCreatedDesc(sensorId);
 
               Map<String, List<SensorDataDto>> map =
                   sensorDataEntities.stream()
