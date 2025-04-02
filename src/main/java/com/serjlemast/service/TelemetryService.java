@@ -132,6 +132,7 @@ public class TelemetryService {
 
               Map<String, List<SensorDataDto>> map =
                   sensorDataEntities.stream()
+                      .filter(data -> data.getKey() != null)
                       .map(
                           data ->
                               new SensorDataDto(data.getKey(), data.getVal(), data.getCreated()))

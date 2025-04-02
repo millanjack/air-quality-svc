@@ -42,7 +42,7 @@ spring:
 
 app:
   schedule:
-    fixedRate: ${APP_SERVICE_SCHEDULER_INTERVAL:60000}  # Interval in milliseconds (60 seconds)
+    fixedRate: ${APP_SERVICE_SCHEDULER_INTERVAL:300000}  # Interval in milliseconds (5 min)
 
   rabbitmq:
     username: ${APP_SERVICE_RABBITMQ_USERNAME}
