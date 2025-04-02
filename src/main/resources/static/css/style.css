@@ -68,8 +68,12 @@ h1 {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .pagination .page-link {
@@ -83,11 +87,11 @@ h1 {
     border-color: #101115;
 }
 
-.blink_1_second{
+.blink_1_second {
     animation: blinker 1s linear infinite;
 }
 
-.blink_3_second{
+.blink_3_second {
     animation: blinker 3s linear infinite;
 }
 
@@ -95,4 +99,11 @@ h1 {
     40% {
         opacity: 0;
     }
+}
+
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
