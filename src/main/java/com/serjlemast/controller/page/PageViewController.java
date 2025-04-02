@@ -18,4 +18,9 @@ public class PageViewController {
   public ModelAndView handleSensorsRedirect() {
     return new ModelAndView(REDIRECT);
   }
+
+  @GetMapping(value = "/info")
+  public ModelAndView handleInfoRedirect() {
+    return new ModelAndView(REDIRECT);
+  }
 }

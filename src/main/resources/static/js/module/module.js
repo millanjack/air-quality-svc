@@ -13,6 +13,8 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider) {
         name: 'controller', url: '/controller', component: 'controller'
     }, {
         name: 'sensors', url: '/sensors', component: 'sensors'
+    }, {
+        name: 'info', url: '/info', component: 'info'
     }];
 
     states.forEach(function (state) {

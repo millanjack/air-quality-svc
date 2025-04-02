@@ -37,6 +37,7 @@
     <script src="js/component/sensors.js"></script>
     <script src="js/component/nav_bar.js"></script>
     <script src="js/component/controller.js"></script>
+    <script src="js/component/info.js"></script>
 
 </head>
 <body ng-app="app" class="d-flex flex-column h-100">
@@ -63,6 +64,9 @@
                     </li>
                     <li class="nav-item" ng-click="hidingNavBar()">
                         <a class="nav-link" ui-sref="sensors" ui-sref-active="active">Sensors</a>
+                    </li>
+                    <li class="nav-item" ng-click="hidingNavBar()">
+                        <a class="nav-link" ui-sref="info" ui-sref-active="active">Info</a>
                     </li>
                 </ul>
             </div>
