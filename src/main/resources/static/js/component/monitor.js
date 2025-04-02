@@ -11,6 +11,13 @@ app.component('monitor', {
 
         $interval(tick, 1000);
 
+        // loading bar
+        $scope.loading_bar_max = 100;
+        $scope.loading_bar_current = 0;
+        $interval(function () {
+            $scope.loading_bar_current = ($scope.loading_bar_current + 1) % $scope.loading_bar_max;
+        }, 40);
+
         // websocket service
         $scope.sensorData = {};
 
@@ -22,6 +29,8 @@ app.component('monitor', {
             $scope.sensorData = newData;
             // Raspberry pi controller
             $rootScope.piController = newData.info
+            // loading bar
+            $scope.loading_bar_current = 0;
         });
 
         // round-progress settings
@@ -70,6 +79,25 @@ app.component('monitor', {
                <br>
             </div>
             <div class="card-body">
+               <div ng-if="!sensorData.sensors || sensorData.sensors.length === 0">
+                  <br><br>
+                  <round-progress
+                     max="loading_bar_max"
+                     current="loading_bar_current"
+                     color="#a8dcff"
+                     bgcolor="#eaeaea"
+                     radius="80"
+                     stroke="15"
+                     clockwise="false"
+                     responsive="false"
+                     duration="500"
+                     animation="easeInBounce"
+                     animation-delay="0">
+                  </round-progress>
+                  <p style="font-size: 18px; margin-top: 10px;">Loading ...</p>
+                  <br>
+                  <br>
+               </div>
                <div ng-repeat="sensor in sensorData.sensors track by $index">
                   <p> Sensor: <b>{{ sensor.deviceId }}</b> ({{ sensor.type }})</p>
                   <br>

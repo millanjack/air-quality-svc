@@ -1,7 +1,14 @@
 'use strict';
 
 app.component('statistics', {
-    controller: function ($location, $scope, restService) {
+    controller: function ($location, $interval, $scope, restService) {
+
+        // loading bar
+        $scope.loading_bar_max = 100;
+        $scope.loading_bar_current = 0;
+        $interval(function () {
+            $scope.loading_bar_current = ($scope.loading_bar_current + 1) % $scope.loading_bar_max;
+        }, 40);
 
         $scope.sensors = [];
 
@@ -16,6 +23,9 @@ app.component('statistics', {
                 let humidityData = sensor.data.find(d => d.key === "humidity");
                 let tvocData = sensor.data.find(d => d.key === "tvoc");
                 let eco2Data = sensor.data.find(d => d.key === "eco2");
+
+                // loading bar
+                $scope.loading_bar_current = 0;
 
                 return {
                     ...sensor,
@@ -46,11 +56,31 @@ app.component('statistics', {
             <div class="card-header">
                <br>
                <p>Statistical data from sensors over the last <b>24 hours</b>, retrieved from the database. <br> 
-               This data includes temperature, humidity, and other key metrics, providing valuable insights into trends 
-               and environmental changes. <br> 
-               Analyze the latest sensor readings to track performance and detect anomalies</p>
+                  This data includes temperature, humidity, and other key metrics, providing valuable insights into trends 
+                  and environmental changes. <br> 
+                  Analyze the latest sensor readings to track performance and detect anomalies
+               </p>
             </div>
             <div class="card-body">
+               <div ng-if="!sensors || sensors.length === 0">
+                  <br><br>
+                  <round-progress
+                     max="loading_bar_max"
+                     current="loading_bar_current"
+                     color="#a8dcff"
+                     bgcolor="#eaeaea"
+                     radius="80"
+                     stroke="15"
+                     clockwise="false"
+                     responsive="false"
+                     duration="500"
+                     animation="easeInBounce"
+                     animation-delay="0">
+                  </round-progress>
+                  <p style="font-size: 18px; margin-top: 10px;">Loading ...</p>
+                  <br>
+                  <br>
+               </div>
                <div ng-repeat="sensor in sensors track by $index">
                   <h5>{{ sensor.deviceId }} ({{ sensor.type }})</h5>
                   <div ng-if="sensor.type !== 'CCS811'">
@@ -77,7 +107,7 @@ app.component('statistics', {
                   </div>
                   <div ng-if="sensor.type === 'CCS811'">
                      <div class="row">
-                         <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-6">
                            {{sensor.eco2Series}}
                            <canvas 
                               class="chart chart-line" 
@@ -94,7 +124,7 @@ app.component('statistics', {
                               chart-labels="sensor.tvocLabels"
                               chart-colors="tvocColors">
                            </canvas>
-                        </div> 
+                        </div>
                      </div>
                   </div>
                   <br>
