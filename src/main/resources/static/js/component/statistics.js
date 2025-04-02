@@ -1,6 +1,6 @@
 'use strict';
 
-app.component('sensors', {
+app.component('statistics', {
     controller: function ($location, $scope, restService) {
 
         $scope.sensors = [];
@@ -10,7 +10,7 @@ app.component('sensors', {
         $scope.temperatureColors = ["rgb(180,180,180)"];
         $scope.humidityColors = ["rgb(95,143,164)"];
 
-        restService.get('/sensors').then(function (response) {
+        restService.get('/statistics').then(function (response) {
             $scope.sensors = response.data.map(sensor => {
                 let tempData = sensor.data.find(d => d.key === "temperature_celsius");
                 let humidityData = sensor.data.find(d => d.key === "humidity");
@@ -44,8 +44,11 @@ app.component('sensors', {
       <div class="col-12">
          <div class="card text-center">
             <div class="card-header">
-               Sensors
                <br>
+               <p>Statistical data from sensors over the last <b>24 hours</b>, retrieved from the database. <br> 
+               This data includes temperature, humidity, and other key metrics, providing valuable insights into trends 
+               and environmental changes. <br> 
+               Analyze the latest sensor readings to track performance and detect anomalies</p>
             </div>
             <div class="card-body">
                <div ng-repeat="sensor in sensors track by $index">

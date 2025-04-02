@@ -1,7 +1,7 @@
 package com.serjlemast.service;
 
-import com.serjlemast.controller.sensor.dto.SensorDataResponse;
-import com.serjlemast.controller.sensor.dto.SensorResponse;
+import com.serjlemast.controller.statistics.dto.SensorDataResponse;
+import com.serjlemast.controller.statistics.dto.SensorResponse;
 import com.serjlemast.event.RaspberrySensorEvent;
 import com.serjlemast.model.raspberry.RaspberryInfo;
 import com.serjlemast.model.sensor.Sensor;
@@ -128,8 +128,7 @@ public class TelemetryService {
         .forEach(
             sensor -> {
               var sensorId = sensor.getId();
-              var sensorDataEntities =
-                  sensorDataRepository.findTop120BySensorIdOrderByCreatedDesc(sensorId);
+              var sensorDataEntities = sensorDataRepository.findLastDayDataBySensorId(sensorId);
 
               Map<String, List<SensorDataDto>> map =
                   sensorDataEntities.stream()

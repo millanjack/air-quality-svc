@@ -1,4 +1,4 @@
-package com.serjlemast.controller.sensor.dto;
+package com.serjlemast.controller.statistics.dto;
 
 import java.util.List;
 

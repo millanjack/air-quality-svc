@@ -1,6 +1,6 @@
-package com.serjlemast.controller.sensor;
+package com.serjlemast.controller.statistics;
 
-import com.serjlemast.controller.sensor.dto.SensorResponse;
+import com.serjlemast.controller.statistics.dto.SensorResponse;
 import com.serjlemast.service.TelemetryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/v1/api")
 @RequiredArgsConstructor
-public class SensorsRestController {
+public class StatisticsRestController {
 
   private final TelemetryService telemetryService;
 
-  @GetMapping("/sensors")
+  @GetMapping("/statistics")
   public ResponseEntity<List<SensorResponse>> sensors() {
     return ResponseEntity.ok(telemetryService.getAllSensorsWithLimitedData());
   }

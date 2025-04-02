@@ -56,15 +56,18 @@ app.component('monitor', {
       <div class="col-12">
          <div class="card text-center">
             <div class="card-header">
+               <p>Environmental Monitoring: Temperature, Humidity & Air Quality Sensors</p>
                <svg class="blink_1_second bd-placeholder-img rounded me-2" width="10" height="10" 
                   xmlns="http://www.w3.org/2000/svg" 
                   aria-hidden="true" 
                   preserveAspectRatio="xMidYMid slice" focusable="false">
                   <rect width="100%" height="100%" fill="cornflowerblue"></rect>
                </svg>
-               Real time monitor 
+               Real time 
                <br>
                {{ clock | date:'medium'}}
+               <br>
+               <br>
             </div>
             <div class="card-body">
                <div ng-repeat="sensor in sensorData.sensors track by $index">

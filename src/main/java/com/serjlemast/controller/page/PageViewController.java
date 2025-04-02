@@ -14,8 +14,8 @@ public class PageViewController {
     return new ModelAndView(REDIRECT);
   }
 
-  @GetMapping(value = "/sensors")
-  public ModelAndView handleSensorsRedirect() {
+  @GetMapping(value = "/statistics")
+  public ModelAndView handleStatisticsRedirect() {
     return new ModelAndView(REDIRECT);
   }
 
