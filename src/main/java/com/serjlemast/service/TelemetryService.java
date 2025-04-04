@@ -129,6 +129,9 @@ public class TelemetryService {
             sensor -> {
               var sensorId = sensor.getId();
               var sensorDataEntities = sensorDataRepository.findLastDayDataBySensorId(sensorId);
+              if (sensorDataEntities.isEmpty()) {
+                return;
+              }
 
               Map<String, List<SensorDataDto>> map =
                   sensorDataEntities.stream()
