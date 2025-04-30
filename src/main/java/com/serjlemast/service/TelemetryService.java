@@ -128,7 +128,7 @@ public class TelemetryService {
         .forEach(
             sensor -> {
               var sensorId = sensor.getId();
-              var sensorDataEntities = sensorDataRepository.findLastDayDataBySensorId(sensorId);
+              var sensorDataEntities = sensorDataRepository.findLastRecordDataBySensorId(sensorId);
               if (sensorDataEntities.isEmpty()) {
                 return;
               }

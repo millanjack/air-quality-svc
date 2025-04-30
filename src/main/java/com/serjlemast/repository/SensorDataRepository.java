@@ -22,4 +22,10 @@ public class SensorDataRepository {
     query.addCriteria(Criteria.where("created").gte(oneHourAgo).and("sensorId").is(sensorId));
     return mongoTemplate.find(query, SensorDataEntity.class);
   }
+
+  public List<SensorDataEntity> findLastRecordDataBySensorId(String sensorId) {
+    var query = new Query();
+    query.addCriteria(Criteria.where("sensorId").is(sensorId)).limit(200);
+    return mongoTemplate.find(query, SensorDataEntity.class);
+  }
 }

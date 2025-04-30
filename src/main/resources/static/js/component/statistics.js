@@ -55,10 +55,10 @@ app.component('statistics', {
          <div class="card text-center">
             <div class="card-header">
                <br>
-               <p>Statistical data from sensors over the last <b>24 hours</b>, retrieved from the database. <br> 
+               <p>Recent statistical data from sensors, retrieved from the database. <br> 
                   This data includes temperature, humidity, and other key metrics, providing valuable insights into trends 
                   and environmental changes. <br> 
-                  Analyze the latest sensor readings to track performance and detect anomalies
+                  Analyze the latest sensor readings to track performance and detect anomalies.
                </p>
             </div>
             <div class="card-body">
