@@ -22,7 +22,7 @@ app.component('info', {
                <img src="img/iot-structure.png" alt="IoT system" style="width: 100%; height: auto;"/>
                <br>
                <br>
-               <h6>Components of an IoT System:</h6>
+               <h6>Components of IoT system:</h6>
                <br>
                <b> 1. Sensors:</b>
                <br>
