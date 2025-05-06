@@ -19,14 +19,17 @@ app.component('info', {
                   other devices, or a central system.
                </p>
                <br>
-               <h6>Core Components of an IoT System:</h6>
+               <img src="img/iot-structure.png" alt="IoT system" style="width: 100%; height: auto;"/>
+               <br>
+               <br>
+               <h6>Components of an IoT System:</h6>
                <br>
                <b> 1. Sensors:</b>
                <br>
                Collect real-world data (e.g., temperature, humidity, air quality)
                <br>
                <br>
-               <b>2. Controller Devices:</b>
+               <b>2. SBC/Microcontroller:</b>
                <br>
                Microcontrollers computing devices that process sensor data and communicate with the cloud or other systems<br>
                Read sensor data, process and send it to a backend server<br>
