@@ -8,45 +8,50 @@ app.component('info', {
       <div class="col-12">
          <div class="card text-center">
             <div class="card-header">
-               Info
+               <h5>IoT system</h5>
                <br>
             </div>
             <div class="card-body">
                <br>
-               <h5>DHT 11 Humidity & Temperature
-                  Sensor
-               </h5>
-               <br>
-               <p>DHT11 Temperature & Humidity Sensor features a
-                  temperature & humidity sensor complex with a
-                  calibrated digital signal output.
+               <p>An IoT (Internet of Things) system is a network of physical devices (“things”) that collect 
+                  and exchange data over the internet or local networks. <br>
+                  These devices use sensors, software, and connectivity to interact with their environment, 
+                  other devices, or a central system.
                </p>
-               <p>The DHT11 is a widely used digital temperature and humidity sensor that offers a simple interface 
-               and easy integration into various electronic projects, including DIY projects and home automation systems. 
-               It measures the surrounding air and provides a digital signal with the temperature and humidity readings. 
-               Its cost-effectiveness and simplicity make it an ideal choice for hobbyists 
-               and educators who are introducing concepts of environmental sensing.</p>
                <br>
-               <div style="display: inline-block;">
-                  <img alt="DHT 11" width="300" style="border-radius: 5px;" 
-                     src="https://abacasstorageaccnt.blob.core.windows.net/cirkit/2c628a0e-39a1-4f8c-b1e5-dbd8acbd8310.png">
-               </div>
+               <h6>Core Components of an IoT System:</h6>
+               <b> 1. Sensors:</b>
+               <br>
+               Collect real-world data (e.g., temperature, humidity, motion)<br>
+               <br>
+               <br>
+               <b>2. Controller Devices:</b><br><br>
+               Controller: Microcontrollers or edge computing devices that process sensor data and communicate with the cloud or other systems<br>
+               Functions: Read sensor data, process or transform it (optional), and send it to a server<br>
+               Programming: Controllers run code written in languages like Python, java, etc.<br>
+               <br>
+               <br>
+               <b>3. Connectivity:</b><br>
+               <br>
+               Network Protocols: Ensures communication between devices, controllers, and the cloud<br>
+               Data Transfer: Sends data from the controller to the cloud or backend system for processing and storage<br>
+               <br>
+               <br>
+               <b>4. Cloud/Backend System:</b><br>
+               Backend Server: A system that receives data from edge devices, processes it, stores it, and might trigger actions based on it<br>
+               Databases: Stores sensor data for future analysis and access<br>
                <br><br>
-               <br>
-               <h5>CCS811 Indoor Air Quality Sensor</h5>
-               <br>
-               <p>The CCS811 digital gas sensor detects volatile organic compounds (VOCs) for indoor air quality measurements. </p>
-               <p>VOCs are often categorized as pollutants and/or sensory irritants and can come from a variety 
-               of sources such as construction materials (paint and carpet), 
-               machines (copiers and processors), and even people (breathing and smoking).
-               It estimates carbon dioxide (CO2) levels where the main source of VOCs is human presence.</p>
-               <br>
-               <div  style="display: inline-block;">
-                  <img alt="CCS811" width="300" style="border-radius: 5px;" 
-                    src="https://abacasstorageaccnt.blob.core.windows.net/cirkit/7dbcbc01-7271-445f-9928-deee3f469544.png">
-               </div>
-               <br>
-               <br>
+               <b>5. Data Storage:</b><br>
+               Databases: Stores incoming data for long-term storage and easy retrieval<br>
+               Function: Ensures the data is stored and accessible for analysis or reporting<br>
+               <br><br>
+               <b>6. Processing & Analytics:</b><br>
+               Data Analysis: Processes the collected data, often involving machine learning or analytics to gain insights or trigger actions<br>
+               <br><br>
+               <b>7. User Interface (Dashboard):</b><br>
+               Visualization & Control: Provides a graphical interface to monitor data or interact with the system<br>
+               Function: Users can view sensor data in real-time, analyze trends, or manually control devices<br>
+               <br><br>
             </div>
             <div class="card-footer text-muted"><br></div>
          </div>

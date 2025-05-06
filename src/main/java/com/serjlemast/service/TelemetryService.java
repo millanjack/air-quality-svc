@@ -8,11 +8,13 @@ import com.serjlemast.model.sensor.Sensor;
 import com.serjlemast.repository.SensorDataRepository;
 import com.serjlemast.repository.SensorRepository;
 import com.serjlemast.repository.entity.RaspberryEntity;
+import com.serjlemast.repository.entity.SensorDataEntity;
 import com.serjlemast.repository.entity.SensorEntity;
 import com.serjlemast.service.dto.SensorDataDto;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,13 +130,16 @@ public class TelemetryService {
         .forEach(
             sensor -> {
               var sensorId = sensor.getId();
-              var sensorDataEntities = sensorDataRepository.findLastRecordDataBySensorId(sensorId);
+              var sensorDataEntities =
+                  sensorDataRepository.findLastRecordDataSortByCreatedDesc(sensorId);
               if (sensorDataEntities.isEmpty()) {
                 return;
               }
 
               Map<String, List<SensorDataDto>> map =
                   sensorDataEntities.stream()
+                      // rever DESC records
+                      .sorted(Comparator.comparing(SensorDataEntity::getCreated))
                       .filter(data -> data.getKey() != null)
                       .map(
                           data ->

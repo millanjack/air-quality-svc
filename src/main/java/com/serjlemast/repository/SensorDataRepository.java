@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -23,9 +24,11 @@ public class SensorDataRepository {
     return mongoTemplate.find(query, SensorDataEntity.class);
   }
 
-  public List<SensorDataEntity> findLastRecordDataBySensorId(String sensorId) {
+  public List<SensorDataEntity> findLastRecordDataSortByCreatedDesc(String sensorId) {
     var query = new Query();
-    query.addCriteria(Criteria.where("sensorId").is(sensorId)).limit(200);
+    query.addCriteria(Criteria.where("sensorId").is(sensorId));
+    query.limit(200);
+    query.with(Sort.by(Sort.Direction.DESC, "created"));
     return mongoTemplate.find(query, SensorDataEntity.class);
   }
 }
