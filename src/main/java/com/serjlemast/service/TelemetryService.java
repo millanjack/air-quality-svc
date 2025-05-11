@@ -2,33 +2,23 @@ package com.serjlemast.service;
 
 import com.serjlemast.controller.rest.StatisticResponse;
 import com.serjlemast.message.RaspberrySensorMessage;
-import com.serjlemast.model.raspberry.RaspberryInfo;
-import com.serjlemast.model.sensor.Sensor;
+import com.serjlemast.repository.RaspberryRepository;
 import com.serjlemast.repository.SensorDataRepository;
 import com.serjlemast.repository.SensorRepository;
-import com.serjlemast.repository.entity.RaspberryEntity;
 import com.serjlemast.repository.entity.SensorDataEntity;
 import com.serjlemast.repository.entity.SensorEntity;
 import com.serjlemast.service.dto.SensorDataDetailsDto;
 import com.serjlemast.service.dto.SensorDataDto;
 import com.serjlemast.service.dto.SensorDto;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
-import org.springframework.data.mongodb.core.FindAndModifyOptions;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -36,145 +26,75 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TelemetryService {
 
-  public static final String CREATED_FIELD = "created";
-  public static final String DEVICE_ID_FIELD = "deviceId";
-
-  public static final String UTC_TIME_ZONE = "UTC";
-
-  private final MongoTemplate mongoTemplate;
   private final SensorRepository sensorRepository;
   private final SensorDataRepository sensorDataRepository;
+
+  private final RaspberryRepository raspberryRepository;
 
   public void findAndModify(RaspberrySensorMessage message) {
     var timestamp = message.timestamp();
 
     var raspberryInfo = message.info();
-    findAndModifyRaspberryInfo(raspberryInfo, timestamp);
+    raspberryRepository.findAndModifyRaspberryInfo(raspberryInfo, timestamp);
 
     var sensors = message.sensors();
     sensors.forEach(
         sensor -> {
-          var sensorId = findAndModifySensor(sensor);
+          var sensorId = sensorRepository.findAndModifySensor(sensor);
           sensor
               .data()
-              .forEach(data -> saveSensorData(sensorId, data.key(), data.val(), timestamp));
+              .forEach(
+                  data -> sensorDataRepository.save(sensorId, data.key(), data.val(), timestamp));
         });
   }
 
-  private void findAndModifyRaspberryInfo(RaspberryInfo info, LocalDateTime timestamp) {
-    var query = new Query(Criteria.where(DEVICE_ID_FIELD).is(info.deviceId()));
-
-    var update =
-        new Update()
-            .set("jvMemoryMb", info.jvMemoryMb())
-            .set("boardTemperature", info.boardTemperature())
-            .set("updated", timestamp)
-            .setOnInsert("boardModel", info.boardModel())
-            .setOnInsert("operatingSystem", info.operatingSystem())
-            .setOnInsert("javaVersions", info.javaVersions())
-            .setOnInsert(CREATED_FIELD, LocalDateTime.now(ZoneId.of(UTC_TIME_ZONE)));
-
-    Optional.ofNullable(
-            /*
-             * When modifying a single document, both db.collection.findAndModify()
-             * and the updateOne() method atomically update the document.
-             *
-             * See Atomicity and Transactions:
-             * link: https://www.mongodb.com/docs/manual/reference/method/db.collection.findAndModify/#atomicity
-             */
-            mongoTemplate.findAndModify(
-                query,
-                update,
-                FindAndModifyOptions.options().returnNew(true).upsert(true),
-                RaspberryEntity.class))
-        .map(RaspberryEntity::getId)
-        .orElseThrow(
-            () -> new RuntimeException("Creating or updating raspberry entity failed for " + info));
-  }
-
-  private String findAndModifySensor(Sensor sensor) {
-    var query = new Query(Criteria.where(DEVICE_ID_FIELD).is(sensor.deviceId()));
-
-    var update =
-        new Update()
-            .setOnInsert("type", sensor.type())
-            .setOnInsert(CREATED_FIELD, LocalDateTime.now(ZoneId.of(UTC_TIME_ZONE)));
-
-    return Optional.ofNullable(
-            mongoTemplate.findAndModify(
-                query,
-                update,
-                FindAndModifyOptions.options().returnNew(true).upsert(true),
-                SensorEntity.class))
-        .map(SensorEntity::getId)
-        .orElseThrow(
-            () ->
-                new RuntimeException(
-                    "Failed to find or create sensor entity, deviceId: " + sensor.deviceId()));
-  }
-
-  private void saveSensorData(String sensorId, String key, Number val, LocalDateTime timestamp) {
-    var document =
-        new Document()
-            .append("sensorId", sensorId)
-            .append("sensorId", sensorId)
-            .append("key", key)
-            .append("val", val)
-            .append(CREATED_FIELD, timestamp);
-
-    mongoTemplate.getCollection("sensor_data").insertOne(document);
-  }
-
   public StatisticResponse findAllSensorsWithLimitedData() {
-    List<SensorDto> response = new ArrayList<>();
+    List<SensorDto> sensors = new ArrayList<>();
 
-    sensorRepository
-        .findAll()
-        .forEach(
-            sensor -> {
-              var sensorId = sensor.getId();
-              var sensorDataEntities =
-                  sensorDataRepository.findLastRecordDataSortByCreatedDesc(sensorId);
-              if (sensorDataEntities.isEmpty()) {
-                return;
-              }
+    List<SensorEntity> sensorEntities = sensorRepository.findAll();
 
-              Map<String, List<SensorDataDetailsDto>> map =
-                  sensorDataEntities.stream()
-                      // rever DESC records
-                      .sorted(Comparator.comparing(SensorDataEntity::getCreated))
-                      .filter(data -> data.getKey() != null)
-                      .map(
-                          data ->
-                              new SensorDataDetailsDto(
-                                  data.getKey(), data.getVal(), data.getCreated()))
-                      .collect(
-                          Collectors.groupingBy(SensorDataDetailsDto::key, Collectors.toList()));
+    sensorEntities.forEach(
+        sensor -> {
+          var sensorId = sensor.getId();
+          var sensorDataEntities =
+              sensorDataRepository.findLastRecordDataSortByCreatedDesc(sensorId);
+          if (sensorDataEntities.isEmpty()) {
+            return;
+          }
 
-              List<SensorDataDto> sensorDataResponses = new ArrayList<>();
-              map.forEach(
-                  (key, value) -> {
-                    Map<LocalDateTime, Double> values =
-                        value.stream()
-                            .collect(
-                                Collectors.toMap(
-                                    SensorDataDetailsDto::created,
-                                    SensorDataDetailsDto::val,
-                                    (first, last) -> last,
-                                    LinkedHashMap::new));
-                    sensorDataResponses.add(
-                        new SensorDataDto(key, values.keySet(), values.values()));
-                  });
+          Map<String, List<SensorDataDetailsDto>> map =
+              sensorDataEntities.stream()
+                  // rever DESC records
+                  .sorted(Comparator.comparing(SensorDataEntity::getCreated))
+                  .filter(data -> data.getKey() != null)
+                  .map(
+                      data ->
+                          new SensorDataDetailsDto(data.getKey(), data.getVal(), data.getCreated()))
+                  .collect(Collectors.groupingBy(SensorDataDetailsDto::key, Collectors.toList()));
 
-              response.add(
-                  new SensorDto(
-                      sensorId,
-                      sensor.getDeviceId(),
-                      sensor.getRaspberryId(),
-                      sensor.getType(),
-                      sensorDataResponses));
-            });
+          List<SensorDataDto> sensorDataResponses = new ArrayList<>();
+          map.forEach(
+              (key, value) -> {
+                Map<LocalDateTime, Double> values =
+                    value.stream()
+                        .collect(
+                            Collectors.toMap(
+                                SensorDataDetailsDto::created,
+                                SensorDataDetailsDto::val,
+                                (first, last) -> last,
+                                LinkedHashMap::new));
+                sensorDataResponses.add(new SensorDataDto(key, values.keySet(), values.values()));
+              });
 
-    return new StatisticResponse(response);
+          sensors.add(
+              new SensorDto(
+                  sensorId,
+                  sensor.getDeviceId(),
+                  sensor.getRaspberryId(),
+                  sensor.getType(),
+                  sensorDataResponses));
+        });
+
+    return new StatisticResponse(sensors);
   }
 }
