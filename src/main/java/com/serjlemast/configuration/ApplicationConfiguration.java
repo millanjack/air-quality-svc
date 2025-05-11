@@ -6,11 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
-import org.springframework.scheduling.annotation.EnableAsync;
 
-@EnableAsync
 @Configuration
-public class AsynchronousEventsConfig {
+public class ApplicationConfiguration {
 
   @Bean
   public TomcatProtocolHandlerCustomizer<?> protocolHandlerVirtualThreadExecutorCustomizer() {

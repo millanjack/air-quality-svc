@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/ping")
-public class PingApiController {
+public class PingController {
 
   @RequestMapping(method = RequestMethod.HEAD)
   public ResponseEntity<Void> pong() {

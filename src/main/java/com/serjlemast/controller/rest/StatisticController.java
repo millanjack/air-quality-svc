@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/v1/api")
 @RequiredArgsConstructor
-public class StatisticsRestController {
+public class StatisticController {
 
   private final TelemetryService telemetryService;
 

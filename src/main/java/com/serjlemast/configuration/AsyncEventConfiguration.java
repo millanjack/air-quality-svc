@@ -7,29 +7,24 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
-/**
- * Short explanation:
+/*
+ * Async scheduling jobs
+ * Link to info: <a href="https://habr.com/ru/articles/771112/">Async scheduling jobs</a>
  *
- * <p>Link to info: <a href="https://habr.com/ru/articles/771112/">Async scheduling jobs</a>
- *
- * <p>Additional configuration:
- *
- * <p>1. mark main class with @EnableAsync <br>
- * 2. mark scheduler job with @Async annotation<br>
+ * 1. mark main class with @EnableAsync
+ * 2. mark scheduler job with @Async annotation
  * 3. configure ThreadPoolTaskExecutor
  */
 @EnableAsync
-@EnableScheduling
 @Configuration
-public class SchedulingAsyncConfiguration implements AsyncConfigurer {
+public class AsyncEventConfiguration implements AsyncConfigurer {
 
   @Override
   public Executor getAsyncExecutor() {
     var executor = new SimpleAsyncTaskExecutor();
     executor.setVirtualThreads(true);
-    executor.setThreadNamePrefix("AsyncExecutor-");
+    executor.setThreadNamePrefix("async-vth-");
     return executor;
   }
 

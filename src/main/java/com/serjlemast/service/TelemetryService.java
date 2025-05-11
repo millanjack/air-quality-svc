@@ -2,7 +2,7 @@ package com.serjlemast.service;
 
 import com.serjlemast.controller.rest.dto.SensorDataResponse;
 import com.serjlemast.controller.rest.dto.SensorResponse;
-import com.serjlemast.event.RaspberrySensorEvent;
+import com.serjlemast.message.RaspberrySensorMessage;
 import com.serjlemast.model.raspberry.RaspberryInfo;
 import com.serjlemast.model.sensor.Sensor;
 import com.serjlemast.repository.SensorDataRepository;
@@ -44,18 +44,20 @@ public class TelemetryService {
   private final SensorRepository sensorRepository;
   private final SensorDataRepository sensorDataRepository;
 
-  public void createOrUpdateData(RaspberrySensorEvent event) {
-    var timestamp = event.timestamp();
-    createOrUpdateRaspberryInfo(event.info(), timestamp);
-    event
-        .sensors()
-        .forEach(
-            sensor -> {
-              var sensorId = findOrCreateSensorEntity(sensor);
-              sensor
-                  .data()
-                  .forEach(data -> saveSensorData(sensorId, data.key(), data.val(), timestamp));
-            });
+  public void findAndModify(RaspberrySensorMessage message) {
+    var timestamp = message.timestamp();
+
+    var raspberryInfo = message.info();
+    createOrUpdateRaspberryInfo(raspberryInfo, timestamp);
+
+    var sensors = message.sensors();
+    sensors.forEach(
+        sensor -> {
+          var sensorId = findOrCreateSensorEntity(sensor);
+          sensor
+              .data()
+              .forEach(data -> saveSensorData(sensorId, data.key(), data.val(), timestamp));
+        });
   }
 
   private void createOrUpdateRaspberryInfo(RaspberryInfo info, LocalDateTime timestamp) {
@@ -107,7 +109,7 @@ public class TelemetryService {
         .orElseThrow(
             () ->
                 new RuntimeException(
-                    "Failed to аштв or create sensor entity, deviceId: " + sensor.deviceId()));
+                    "Failed to find or create sensor entity, deviceId: " + sensor.deviceId()));
   }
 
   public void saveSensorData(String sensorId, String key, Number val, LocalDateTime timestamp) {

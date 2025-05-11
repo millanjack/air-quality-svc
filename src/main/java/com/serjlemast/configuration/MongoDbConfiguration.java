@@ -25,6 +25,7 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 @EnableMongoAuditing
 @RequiredArgsConstructor
 public class MongoDbConfiguration extends AbstractMongoClientConfiguration {
+
   private final MongoProperties mongoProperties;
 
   @Bean

@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class SensorMessageConfig {
+public class ReferenceStorageConfiguration {
 
   @Bean
-  public AtomicReference<RaspberrySensorMessage> lastSensorMessage() {
+  public AtomicReference<RaspberrySensorMessage> sensorReferenceStorage() {
     return new AtomicReference<>();
   }
 }
