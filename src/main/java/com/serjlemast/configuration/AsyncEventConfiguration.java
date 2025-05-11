@@ -12,9 +12,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * Async scheduling jobs
  * Link to info: <a href="https://habr.com/ru/articles/771112/">Async scheduling jobs</a>
  *
- * 1. mark the main class with @EnableAsync
- * 2. mark a scheduler job with @Async annotation
- * 3. configure ThreadPoolTaskExecutor
+ * 1. Mark the main class with @EnableAsync
+ * 2. Mark a scheduler job with @Async annotation
+ * 3. Configure ThreadPoolTaskExecutor
  */
 @EnableAsync
 @Configuration

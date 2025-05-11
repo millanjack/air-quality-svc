@@ -57,7 +57,7 @@ public class SensorWebSocketHandler extends TextWebSocketHandler {
       return new TextMessage(json);
     } catch (JsonProcessingException e) {
       throw new WebSocketHandlerException(
-          "Error serializing AMQP message: '%s'".formatted(message), e);
+          "Error serializing AMQP message to json: '%s'".formatted(message), e);
     }
   }
 }
