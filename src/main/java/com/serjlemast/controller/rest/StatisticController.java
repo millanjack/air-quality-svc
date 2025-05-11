@@ -1,8 +1,6 @@
 package com.serjlemast.controller.rest;
 
-import com.serjlemast.controller.rest.dto.SensorResponse;
 import com.serjlemast.service.TelemetryService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,7 +17,7 @@ public class StatisticController {
   private final TelemetryService telemetryService;
 
   @GetMapping("/statistics")
-  public ResponseEntity<List<SensorResponse>> sensors() {
+  public ResponseEntity<StatisticResponse> sensors() {
     return ResponseEntity.ok(telemetryService.findAllSensorsWithLimitedData());
   }
 }

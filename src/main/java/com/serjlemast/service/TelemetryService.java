@@ -1,7 +1,6 @@
 package com.serjlemast.service;
 
-import com.serjlemast.controller.rest.dto.SensorDataResponse;
-import com.serjlemast.controller.rest.dto.SensorResponse;
+import com.serjlemast.controller.rest.StatisticResponse;
 import com.serjlemast.message.RaspberrySensorMessage;
 import com.serjlemast.model.raspberry.RaspberryInfo;
 import com.serjlemast.model.sensor.Sensor;
@@ -10,7 +9,9 @@ import com.serjlemast.repository.SensorRepository;
 import com.serjlemast.repository.entity.RaspberryEntity;
 import com.serjlemast.repository.entity.SensorDataEntity;
 import com.serjlemast.repository.entity.SensorEntity;
+import com.serjlemast.service.dto.SensorDataDetailsDto;
 import com.serjlemast.service.dto.SensorDataDto;
+import com.serjlemast.service.dto.SensorDto;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -124,8 +125,8 @@ public class TelemetryService {
     mongoTemplate.getCollection("sensor_data").insertOne(document);
   }
 
-  public List<SensorResponse> findAllSensorsWithLimitedData() {
-    List<SensorResponse> response = new ArrayList<>();
+  public StatisticResponse findAllSensorsWithLimitedData() {
+    List<SensorDto> response = new ArrayList<>();
 
     sensorRepository
         .findAll()
@@ -138,33 +139,35 @@ public class TelemetryService {
                 return;
               }
 
-              Map<String, List<SensorDataDto>> map =
+              Map<String, List<SensorDataDetailsDto>> map =
                   sensorDataEntities.stream()
                       // rever DESC records
                       .sorted(Comparator.comparing(SensorDataEntity::getCreated))
                       .filter(data -> data.getKey() != null)
                       .map(
                           data ->
-                              new SensorDataDto(data.getKey(), data.getVal(), data.getCreated()))
-                      .collect(Collectors.groupingBy(SensorDataDto::key, Collectors.toList()));
+                              new SensorDataDetailsDto(
+                                  data.getKey(), data.getVal(), data.getCreated()))
+                      .collect(
+                          Collectors.groupingBy(SensorDataDetailsDto::key, Collectors.toList()));
 
-              List<SensorDataResponse> sensorDataResponses = new ArrayList<>();
+              List<SensorDataDto> sensorDataResponses = new ArrayList<>();
               map.forEach(
                   (key, value) -> {
                     Map<LocalDateTime, Double> values =
                         value.stream()
                             .collect(
                                 Collectors.toMap(
-                                    SensorDataDto::created,
-                                    SensorDataDto::val,
+                                    SensorDataDetailsDto::created,
+                                    SensorDataDetailsDto::val,
                                     (first, last) -> last,
                                     LinkedHashMap::new));
                     sensorDataResponses.add(
-                        new SensorDataResponse(key, values.keySet(), values.values()));
+                        new SensorDataDto(key, values.keySet(), values.values()));
                   });
 
               response.add(
-                  new SensorResponse(
+                  new SensorDto(
                       sensorId,
                       sensor.getDeviceId(),
                       sensor.getRaspberryId(),
@@ -172,6 +175,6 @@ public class TelemetryService {
                       sensorDataResponses));
             });
 
-    return response;
+    return new StatisticResponse(response);
   }
 }
