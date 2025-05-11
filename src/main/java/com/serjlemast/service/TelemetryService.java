@@ -48,19 +48,19 @@ public class TelemetryService {
     var timestamp = message.timestamp();
 
     var raspberryInfo = message.info();
-    createOrUpdateRaspberryInfo(raspberryInfo, timestamp);
+    findAndModifyRaspberryInfo(raspberryInfo, timestamp);
 
     var sensors = message.sensors();
     sensors.forEach(
         sensor -> {
-          var sensorId = findOrCreateSensorEntity(sensor);
+          var sensorId = findAndModifySensor(sensor);
           sensor
               .data()
               .forEach(data -> saveSensorData(sensorId, data.key(), data.val(), timestamp));
         });
   }
 
-  private void createOrUpdateRaspberryInfo(RaspberryInfo info, LocalDateTime timestamp) {
+  private void findAndModifyRaspberryInfo(RaspberryInfo info, LocalDateTime timestamp) {
     var query = new Query(Criteria.where(DEVICE_ID_FIELD).is(info.deviceId()));
 
     var update =
@@ -91,7 +91,7 @@ public class TelemetryService {
             () -> new RuntimeException("Creating or updating raspberry entity failed for " + info));
   }
 
-  private String findOrCreateSensorEntity(Sensor sensor) {
+  private String findAndModifySensor(Sensor sensor) {
     var query = new Query(Criteria.where(DEVICE_ID_FIELD).is(sensor.deviceId()));
 
     var update =
@@ -112,7 +112,7 @@ public class TelemetryService {
                     "Failed to find or create sensor entity, deviceId: " + sensor.deviceId()));
   }
 
-  public void saveSensorData(String sensorId, String key, Number val, LocalDateTime timestamp) {
+  private void saveSensorData(String sensorId, String key, Number val, LocalDateTime timestamp) {
     var document =
         new Document()
             .append("sensorId", sensorId)
@@ -124,7 +124,7 @@ public class TelemetryService {
     mongoTemplate.getCollection("sensor_data").insertOne(document);
   }
 
-  public List<SensorResponse> getAllSensorsWithLimitedData() {
+  public List<SensorResponse> findAllSensorsWithLimitedData() {
     List<SensorResponse> response = new ArrayList<>();
 
     sensorRepository

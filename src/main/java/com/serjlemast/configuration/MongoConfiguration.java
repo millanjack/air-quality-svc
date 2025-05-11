@@ -24,7 +24,7 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 @Configuration
 @EnableMongoAuditing
 @RequiredArgsConstructor
-public class MongoDbConfiguration extends AbstractMongoClientConfiguration {
+public class MongoConfiguration extends AbstractMongoClientConfiguration {
 
   private final MongoProperties mongoProperties;
 
@@ -56,7 +56,7 @@ public class MongoDbConfiguration extends AbstractMongoClientConfiguration {
             .writeConcern(WriteConcern.MAJORITY)
             // and Read Preference
             .readPreference(ReadPreference.primary())
-            // Enable Snappy Compression to reduces network load
+            // Enable Snappy Compression to reduce network load
             // note: disable  .compressorList(List.of(MongoCompressor.createSnappyCompressor()))
             .build();
     return MongoClients.create(settings);

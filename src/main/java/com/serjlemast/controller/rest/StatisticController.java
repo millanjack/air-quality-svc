@@ -20,6 +20,6 @@ public class StatisticController {
 
   @GetMapping("/statistics")
   public ResponseEntity<List<SensorResponse>> sensors() {
-    return ResponseEntity.ok(telemetryService.getAllSensorsWithLimitedData());
+    return ResponseEntity.ok(telemetryService.findAllSensorsWithLimitedData());
   }
 }
