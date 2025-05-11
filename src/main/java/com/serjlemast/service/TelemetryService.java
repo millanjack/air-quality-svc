@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,7 @@ public class TelemetryService {
         });
   }
 
-  public StatisticResponse findAllSensorsWithLimitedData() {
+  public StatisticResponse findAllSensorsWithLimitedDataOld() {
     List<SensorDto> sensors = new ArrayList<>();
 
     List<SensorEntity> sensorEntities = sensorRepository.findAll();
@@ -56,45 +57,79 @@ public class TelemetryService {
     sensorEntities.forEach(
         sensor -> {
           var sensorId = sensor.getId();
+
           var sensorDataEntities =
               sensorDataRepository.findLastRecordDataSortByCreatedDesc(sensorId);
+
           if (sensorDataEntities.isEmpty()) {
             return;
           }
 
-          Map<String, List<SensorDataDetailsDto>> map =
-              sensorDataEntities.stream()
-                  // rever DESC records
-                  .sorted(Comparator.comparing(SensorDataEntity::getCreated))
-                  .filter(data -> data.getKey() != null)
-                  .map(
-                      data ->
-                          new SensorDataDetailsDto(data.getKey(), data.getVal(), data.getCreated()))
-                  .collect(Collectors.groupingBy(SensorDataDetailsDto::key, Collectors.toList()));
-
-          List<SensorDataDto> sensorDataResponses = new ArrayList<>();
-          map.forEach(
-              (key, value) -> {
-                Map<LocalDateTime, Double> values =
-                    value.stream()
-                        .collect(
-                            Collectors.toMap(
-                                SensorDataDetailsDto::created,
-                                SensorDataDetailsDto::val,
-                                (first, last) -> last,
-                                LinkedHashMap::new));
-                sensorDataResponses.add(new SensorDataDto(key, values.keySet(), values.values()));
-              });
+          List<SensorDataDto> data = findSensorData(sensorDataEntities);
 
           sensors.add(
               new SensorDto(
-                  sensorId,
-                  sensor.getDeviceId(),
-                  sensor.getRaspberryId(),
-                  sensor.getType(),
-                  sensorDataResponses));
+                  sensorId, sensor.getDeviceId(), sensor.getRaspberryId(), sensor.getType(), data));
         });
 
     return new StatisticResponse(sensors);
+  }
+
+  public StatisticResponse findAllSensorsWithLimitedData() {
+    var sensors =
+        sensorRepository.findAll().stream()
+            .map(this::buildSensorDetailsIfDataExists)
+            .flatMap(Optional::stream)
+            .toList();
+
+    return new StatisticResponse(sensors);
+  }
+
+  private Optional<SensorDto> buildSensorDetailsIfDataExists(SensorEntity sensor) {
+    var sensorId = sensor.getId();
+    var sensorDataList = sensorDataRepository.findLastRecordDataSortByCreatedDesc(sensorId);
+    if (sensorDataList.isEmpty()) {
+      return Optional.empty();
+    }
+
+    return Optional.of(
+        new SensorDto(
+            sensorId,
+            sensor.getDeviceId(),
+            sensor.getRaspberryId(),
+            sensor.getType(),
+            findSensorData(sensorDataList)));
+  }
+
+  private List<SensorDataDto> findSensorData(List<SensorDataEntity> sensorDataList) {
+    // types: temperature_celsius, humidity, temperature_fahrenheit, eco2
+    Map<String, List<SensorDataDetailsDto>> typesWithDetails =
+        sensorDataList.stream()
+            // rever DESC records
+            .sorted(Comparator.comparing(SensorDataEntity::getCreated))
+            .filter(data -> data.getKey() != null)
+            .map(data -> new SensorDataDetailsDto(data.getKey(), data.getVal(), data.getCreated()))
+            .collect(Collectors.groupingBy(SensorDataDetailsDto::key, Collectors.toList()));
+
+    return findSensorDataList(typesWithDetails);
+  }
+
+  private List<SensorDataDto> findSensorDataList(
+      Map<String, List<SensorDataDetailsDto>> groupedData) {
+    return groupedData.entrySet().stream()
+        .map(
+            entry -> {
+              String type = entry.getKey();
+              Map<LocalDateTime, Double> valueMap =
+                  entry.getValue().stream()
+                      .collect(
+                          Collectors.toMap(
+                              SensorDataDetailsDto::created,
+                              SensorDataDetailsDto::val,
+                              (existing, replacement) -> replacement,
+                              LinkedHashMap::new));
+              return new SensorDataDto(type, valueMap.keySet(), valueMap.values());
+            })
+        .toList();
   }
 }
