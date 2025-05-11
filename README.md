@@ -8,8 +8,6 @@
 
 #### Project configuration
 
-"ws://localhost:8081/sensor-data";
-
 Add rabbitMQ properties to `.env` file:
 
 ```
@@ -29,6 +27,14 @@ APP_SERVICE_SCHEDULER_INTERVAL=60000 (by default)
 ```
 
 Note: for CloudAMQP RabbitMQ provider `RABBITMQ_VIRTUAL_HOST` is `RABBITMQ_USERNAME`
+
+#### API endpoints
+
+1. REST
+    - /v1/api/statistics
+
+2. WebSocket
+    - ws://HOST/sensor-data
 
 #### Provider
 
@@ -77,8 +83,8 @@ link: https://github.com/google/google-java-format/blob/master/README.md#intelli
 
 Endpoint ID Description:
 
-* info - Displays information about your application.
-* health - Displays your application’s health status.
+* /actuator/info - displays information about your application.
+* /actuator/health - displays your application’s health status.
 
 Enable info and health endpoint in *.yaml file
 

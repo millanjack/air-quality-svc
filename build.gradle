@@ -39,8 +39,7 @@ dependencies {
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo:${embedMongoVersion}"
-    testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:${embedMongoSpring3xVersion}"
+    testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:${embedMongoSp3xVersion}"
 }
 
 
