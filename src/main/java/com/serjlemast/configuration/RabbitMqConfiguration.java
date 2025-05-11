@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class RabbitMqConnectionFactoryConfiguration {
+public class RabbitMqConfiguration {
 
   @Value("${app.rabbitmq.username}")
   private String username;

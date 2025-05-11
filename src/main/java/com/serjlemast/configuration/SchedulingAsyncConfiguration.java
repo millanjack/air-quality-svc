@@ -23,7 +23,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @EnableScheduling
 @Configuration
-public class AsyncSchedulingConfiguration implements AsyncConfigurer {
+public class SchedulingAsyncConfiguration implements AsyncConfigurer {
 
   @Override
   public Executor getAsyncExecutor() {

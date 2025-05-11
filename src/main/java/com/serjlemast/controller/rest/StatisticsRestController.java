@@ -1,6 +1,6 @@
-package com.serjlemast.controller.statistics;
+package com.serjlemast.controller.rest;
 
-import com.serjlemast.controller.statistics.dto.SensorResponse;
+import com.serjlemast.controller.rest.dto.SensorResponse;
 import com.serjlemast.service.TelemetryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.serjlemast.controller.statistics.dto;
+package com.serjlemast.controller.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;

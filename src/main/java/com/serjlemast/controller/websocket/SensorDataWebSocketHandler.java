@@ -1,4 +1,4 @@
-package com.serjlemast.handler;
+package com.serjlemast.controller.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serjlemast.message.RaspberrySensorMessage;

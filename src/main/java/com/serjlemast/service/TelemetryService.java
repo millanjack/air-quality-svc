@@ -1,7 +1,7 @@
 package com.serjlemast.service;
 
-import com.serjlemast.controller.statistics.dto.SensorDataResponse;
-import com.serjlemast.controller.statistics.dto.SensorResponse;
+import com.serjlemast.controller.rest.dto.SensorDataResponse;
+import com.serjlemast.controller.rest.dto.SensorResponse;
 import com.serjlemast.event.RaspberrySensorEvent;
 import com.serjlemast.model.raspberry.RaspberryInfo;
 import com.serjlemast.model.sensor.Sensor;

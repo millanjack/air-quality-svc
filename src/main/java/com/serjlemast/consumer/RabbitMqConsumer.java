@@ -1,7 +1,7 @@
 package com.serjlemast.consumer;
 
 import com.rabbitmq.client.Channel;
-import com.serjlemast.handler.SensorDataWebSocketHandler;
+import com.serjlemast.controller.websocket.SensorDataWebSocketHandler;
 import com.serjlemast.message.RaspberrySensorMessage;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.serjlemast.controller.statistics.dto;
+package com.serjlemast.controller.rest.dto;
 
 import java.util.List;
 

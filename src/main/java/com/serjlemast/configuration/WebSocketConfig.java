@@ -1,7 +1,7 @@
 package com.serjlemast.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.serjlemast.handler.SensorDataWebSocketHandler;
+import com.serjlemast.controller.websocket.SensorDataWebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
