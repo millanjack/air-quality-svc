@@ -18,5 +18,5 @@ COPY --from=layers /application/spring-boot-loader/ ./
 COPY --from=layers /application/snapshot-dependencies/ ./
 COPY --from=layers /application/application/ ./
 
-ENV JAVA_OPTS="-XX:+UseG1GC -XX:+TieredCompilation -XX:MaxRAMPercentage=75.0 -Dspring.main.lazy-initialization=true"
+ENV JAVA_OPTS="-XX:+UseG1GC -XX:+TieredCompilation -XX:MaxRAMPercentage=75.0"
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS org.springframework.boot.loader.launch.JarLauncher"]
