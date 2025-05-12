@@ -55,6 +55,17 @@ public class TelemetryService {
         });
   }
 
+  /*
+   * Retrieves a list of all sensors from the repository and maps them to DTOs only if they contain data.
+   *
+   * The method performs the following steps:
+   * - Fetches all sensor entities from the {@code sensorRepository}.
+   * - Maps each sensor to a {@code SensorDto} using {@code mapToSensorDtoIfDataExists}, if data exists.
+   * - Filters out sensors without data by flattening {@code Optional} values.
+   * - Wraps the resulting list of {@code SensorDto} objects in a {@code StatisticResponse}.
+   *
+   * @return a {@code StatisticResponse} containing a list of sensors with available data.
+   */
   public StatisticResponse findAllSensorsWithLimitedData() {
     var sensors =
         sensorRepository.findAll().stream()
