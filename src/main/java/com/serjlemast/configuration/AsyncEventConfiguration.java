@@ -1,35 +1,28 @@
 package com.serjlemast.configuration;
 
-import java.util.concurrent.Executor;
-import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
-import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /*
- * Async scheduling jobs
- * Link to info: <a href="https://habr.com/ru/articles/771112/">Async scheduling jobs</a>
+ * Explanation:
  *
- * 1. Mark the main class with @EnableAsync
- * 2. Mark a scheduler job with @Async annotation
- * 3. Configure ThreadPoolTaskExecutor
+ * Executors.newVirtualThreadPerTaskExecutor() returns an ExecutorService that:
+ * - Creates a new virtual thread for every task.
+ * - Is ideal for concurrent I/O-bound tasks (e.g., HTTP calls, database queries).
+ *
+ * Virtual threads are lightweight and scale well compared to platform (OS) threads.
+ *
+ * shutdown() is still valid — this executor also needs to be shut down to clean up thread factories.
  */
 @EnableAsync
 @Configuration
-public class AsyncEventConfiguration implements AsyncConfigurer {
+public class AsyncEventConfiguration {
 
-  @Override
-  public Executor getAsyncExecutor() {
-    var executor = new SimpleAsyncTaskExecutor();
-    executor.setVirtualThreads(true);
-    executor.setThreadNamePrefix("async-vth-");
-    return executor;
-  }
-
-  @Override
-  public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-    return new SimpleAsyncUncaughtExceptionHandler();
+  @Bean(name = "virtualThreadExecutor", destroyMethod = "shutdown")
+  public ExecutorService virtualThreadExecutor() {
+    return Executors.newVirtualThreadPerTaskExecutor();
   }
 }
