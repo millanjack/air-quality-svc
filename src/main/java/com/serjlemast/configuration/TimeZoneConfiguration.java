@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TimeZoneConfiguration {
 
+  public static final String UTC_TIME_ZONE = "UTC";
+
   /*
    * Initializes the application with UTC as the default time zone.
    * This method is called automatically after the bean is created.
@@ -20,6 +22,6 @@ public class TimeZoneConfiguration {
    */
   @PostConstruct
   public void init() {
-    TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    TimeZone.setDefault(TimeZone.getTimeZone(UTC_TIME_ZONE));
   }
 }

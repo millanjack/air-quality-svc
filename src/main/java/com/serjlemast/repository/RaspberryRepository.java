@@ -1,8 +1,8 @@
 package com.serjlemast.repository;
 
+import static com.serjlemast.configuration.TimeZoneConfiguration.UTC_TIME_ZONE;
 import static com.serjlemast.repository.GeneralFields.CREATED_FIELD;
 import static com.serjlemast.repository.GeneralFields.DEVICE_ID_FIELD;
-import static com.serjlemast.repository.GeneralFields.UTC_TIME_ZONE;
 
 import com.serjlemast.model.raspberry.RaspberryInfo;
 import com.serjlemast.repository.entity.RaspberryEntity;
@@ -23,7 +23,20 @@ public class RaspberryRepository {
 
   private final MongoTemplate mongoTemplate;
 
-  public void findAndModifyRaspberryInfo(RaspberryInfo info, LocalDateTime timestamp) {
+  /*
+   * Updates an existing Raspberry Pi entity by device ID, or inserts a new one if not present.
+   *
+   * If the entity exists, its runtime data (e.g., memory, temperature, updated time) is updated.
+   * If not, a new entity is inserted with system-level details (e.g., board model, OS, Java versions).
+   *
+   * Atomicity:
+   *  This operation is atomic using MongoDB's {@code findAndModify}.
+   *
+   * @param info - Domain model with Raspberry Pi runtime and system details
+   * @param timestamp - Timestamp to record as the latest update time
+   * @throws RepositoryException if the entity cannot be created or updated
+   */
+  public void findAndModify(RaspberryInfo info, LocalDateTime timestamp) {
     var query = new Query(Criteria.where(DEVICE_ID_FIELD).is(info.deviceId()));
 
     var update =

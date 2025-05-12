@@ -10,7 +10,6 @@ import com.serjlemast.repository.entity.SensorEntity;
 import com.serjlemast.service.dto.SensorDataDto;
 import com.serjlemast.service.dto.SensorDto;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,16 +29,25 @@ public class TelemetryService {
 
   private final RaspberryRepository raspberryRepository;
 
+  /*
+   * Processes an incoming Raspberry sensor message by updating or inserting
+   * raspberry metadata, sensor definitions, and associated sensor data.
+   *
+   * The method performs the following steps atomically (where applicable):
+   *   - Upserts the Raspberry Pi metadata
+   *   - Upserts each sensor's metadata and retrieves its unique ID
+   *   - Persists each sensor data reading
+   */
   public void findAndModify(RaspberrySensorMessage message) {
     var timestamp = message.timestamp();
 
     var raspberryInfo = message.info();
-    raspberryRepository.findAndModifyRaspberryInfo(raspberryInfo, timestamp);
+    raspberryRepository.findAndModify(raspberryInfo, timestamp);
 
     var sensors = message.sensors();
     sensors.forEach(
         sensor -> {
-          var sensorId = sensorRepository.findAndModifySensor(sensor);
+          var sensorId = sensorRepository.findAndModify(sensor);
           sensor
               .data()
               .forEach(
@@ -50,17 +58,17 @@ public class TelemetryService {
   public StatisticResponse findAllSensorsWithLimitedData() {
     var sensors =
         sensorRepository.findAll().stream()
-            .map(this::buildSensorDetailsIfDataExists)
+            .map(this::mapToSensorDtoIfDataExists)
             .flatMap(Optional::stream)
             .toList();
 
     return new StatisticResponse(sensors);
   }
 
-  private Optional<SensorDto> buildSensorDetailsIfDataExists(SensorEntity sensor) {
+  private Optional<SensorDto> mapToSensorDtoIfDataExists(SensorEntity sensor) {
     var sensorId = sensor.getId();
 
-    var sensorDataList = sensorDataRepository.findLastRecordDataSortByCreatedDesc(sensorId);
+    var sensorDataList = sensorDataRepository.findLast200Record(sensorId);
     if (sensorDataList.isEmpty()) {
       return Optional.empty();
     }
@@ -78,16 +86,9 @@ public class TelemetryService {
     // types: temperature_celsius, humidity, temperature_fahrenheit, eco2
     Map<String, List<SensorDataEntity>> typesWithDetails =
         entities.stream()
-            // rever DESC records
-            .sorted(Comparator.comparing(SensorDataEntity::getCreated))
-            .filter(data -> data.getKey() != null)
             .collect(Collectors.groupingBy(SensorDataEntity::getKey, Collectors.toList()));
 
-    return findSensorDataList(typesWithDetails);
-  }
-
-  private List<SensorDataDto> findSensorDataList(Map<String, List<SensorDataEntity>> groupedData) {
-    return groupedData.entrySet().stream()
+    return typesWithDetails.entrySet().stream()
         .map(
             entry -> {
               var type = entry.getKey();
