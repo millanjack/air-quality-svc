@@ -35,6 +35,11 @@ public class RabbitMqConsumer {
    */
   private final AtomicReference<RaspberrySensorMessage> sensorReferenceStorage;
 
+  /*
+   * Thread-safe reference to store the latest received sensor message.
+   */
+  private final AtomicReference<RaspberrySensorMessage> wsReferenceStorage;
+
   /**
    * Handles incoming sensor messages from RabbitMQ. This method is triggered automatically when a
    * message is received.
@@ -52,6 +57,9 @@ public class RabbitMqConsumer {
 
     // Update the sensor data reference with the latest message
     sensorReferenceStorage.set(message);
+
+    // Update the sensor data reference with the latest message
+    wsReferenceStorage.set(message);
 
     // Send the sensor data to connected WebSocket clients
     webSocketHandler.sendSensorData(message);

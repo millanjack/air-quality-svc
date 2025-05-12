@@ -33,7 +33,10 @@ spring:
 
 app:
   schedule:
-    cron: ${APP_SERVICE_SCHEDULER_CRONE:0 * * * * *}
+    process:
+      cron: ${APP_SERVICE_SCHEDULER_PROCESS_CRONE:0 * * * * *}
+    eviction:
+      cron: ${APP_SERVICE_SCHEDULER_EVICTION_CRONE:0 */2 * * * *}
 
   rabbitmq:
     username: ${APP_SERVICE_RABBITMQ_USERNAME}

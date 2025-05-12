@@ -2,8 +2,10 @@ package com.serjlemast.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serjlemast.controller.websocket.SensorWebSocketHandler;
+import com.serjlemast.message.RaspberrySensorMessage;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.WebSocketSession;
@@ -30,7 +32,9 @@ public class WebSocketHandlerConfiguration {
    */
   @Bean
   public SensorWebSocketHandler webSocketHandler(
-      ObjectMapper objectMapper, List<WebSocketSession> webSocketSessions) {
-    return new SensorWebSocketHandler(objectMapper, webSocketSessions);
+      ObjectMapper objectMapper,
+      AtomicReference<RaspberrySensorMessage> wsReferenceStorage,
+      List<WebSocketSession> webSocketSessions) {
+    return new SensorWebSocketHandler(objectMapper, webSocketSessions, wsReferenceStorage);
   }
 }

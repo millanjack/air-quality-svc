@@ -12,4 +12,9 @@ public class ReferenceStorageConfiguration {
   public AtomicReference<RaspberrySensorMessage> sensorReferenceStorage() {
     return new AtomicReference<>();
   }
+
+  @Bean
+  public AtomicReference<RaspberrySensorMessage> wsReferenceStorage() {
+    return new AtomicReference<>();
+  }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serjlemast.message.RaspberrySensorMessage;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.CloseStatus;
@@ -19,13 +21,16 @@ public class SensorWebSocketHandler extends TextWebSocketHandler {
 
   private final List<WebSocketSession> sessions;
 
+  private final AtomicReference<RaspberrySensorMessage> wsReferenceStorage;
+
   @Override
   public void afterConnectionEstablished(WebSocketSession session) {
     log.info("WebSocket connection established - session: {}", session);
     // 1. Add the new session to the list of active sessions
     sessions.add(session);
     // 2. send a message from a cache
-    // sendMessage(session, textMessage);
+    Optional.ofNullable(wsReferenceStorage.get())
+        .ifPresent(message -> sendMessage(session, convertToTextMessage(message)));
   }
 
   @Override

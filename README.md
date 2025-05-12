@@ -23,7 +23,7 @@ RABBITMQ_EXCHANGE=air-quality-exchange (by default)
 RABBITMQ_ROUTING_KEY=air-quality-routing-key (by default)
 
 # Interval in milliseconds (60 seconds)
-APP_SERVICE_SCHEDULER_CRONE=0 * * * * *
+APP_SERVICE_SCHEDULER_PROCESS_CRONE=0 * * * * *
 ```
 
 Note: for CloudAMQP RabbitMQ provider `RABBITMQ_VIRTUAL_HOST` is `RABBITMQ_USERNAME`
