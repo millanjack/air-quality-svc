@@ -32,8 +32,9 @@ public class SchedulerProcessorService {
   private final AtomicReference<RaspberrySensorMessage> sensorReferenceStorage;
 
   @Async("virtualThreadExecutor")
-  @Scheduled(fixedRateString = "${app.schedule.fixedRate}")
+  @Scheduled(cron = "${app.schedule.cron}")
   public void processLastMessage() {
+    log.info("Processing scheduled");
     Optional.ofNullable(sensorReferenceStorage.getAndSet(null))
         .ifPresent(
             message -> {

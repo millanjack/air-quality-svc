@@ -33,7 +33,7 @@ spring:
 
 app:
   schedule:
-    fixedRate: ${APP_SERVICE_SCHEDULER_INTERVAL:60000}  # Interval in milliseconds (60 seconds)
+    cron: ${APP_SERVICE_SCHEDULER_CRONE:*/15 * * * * *}
 
   rabbitmq:
     username: ${APP_SERVICE_RABBITMQ_USERNAME}
