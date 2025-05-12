@@ -1,6 +1,6 @@
 package com.serjlemast.controller.rest;
 
-import com.serjlemast.service.TelemetryService;
+import com.serjlemast.service.cache.TelemetryCacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class StatisticController {
 
-  private final TelemetryService telemetryService;
+  private final TelemetryCacheService telemetryCacheService;
 
   @GetMapping("/statistics")
   public ResponseEntity<StatisticResponse> sensors() {
-    return ResponseEntity.ok(telemetryService.findAllSensorsWithLimitedData());
+    return ResponseEntity.ok(telemetryCacheService.findAllSensorsFromCacheIfAvailable());
   }
 }

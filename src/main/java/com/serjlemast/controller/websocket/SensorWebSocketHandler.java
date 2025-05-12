@@ -22,7 +22,10 @@ public class SensorWebSocketHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionEstablished(WebSocketSession session) {
     log.info("WebSocket connection established - session: {}", session);
+    // 1. Add the new session to the list of active sessions
     sessions.add(session);
+    // 2. send a message from a cache
+    // sendMessage(session, textMessage);
   }
 
   @Override
