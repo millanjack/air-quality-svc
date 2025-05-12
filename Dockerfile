@@ -12,9 +12,11 @@ FROM eclipse-temurin:24.0.1_9-jdk-alpine
 VOLUME /tmp
 RUN adduser -S spring-user
 USER spring-user
+
 COPY --from=layers /application/dependencies/ ./
 COPY --from=layers /application/spring-boot-loader/ ./
 COPY --from=layers /application/snapshot-dependencies/ ./
 COPY --from=layers /application/application/ ./
 
-ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
+ENV JAVA_OPTS="-XX:+UseG1GC -XX:+TieredCompilation -XX:MaxRAMPercentage=75.0 -Dspring.main.lazy-initialization=true"
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS org.springframework.boot.loader.launch.JarLauncher"]
